@@ -25,20 +25,11 @@ a{color:inherit}
 :focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:10px}
 .container{max-width:1180px;margin:0 auto;padding:0 32px}
 
-/* nav, as on eonai.solutions */
-.nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid transparent}
-.nav .container{display:flex;align-items:center;gap:36px;height:76px}
-.logo{display:flex;align-items:center;gap:8px;font:600 30px var(--head);letter-spacing:-.04em;text-decoration:none;color:var(--navy)}
-.logo b{color:var(--blue);font-weight:600}
-.logo svg{width:44px;height:24px}
-.nav nav{display:flex;gap:30px;flex:1}
-.nav nav a{text-decoration:none;color:var(--body);font-weight:500;font-size:15px}
-.nav nav a:hover,.nav nav a[aria-current]{color:var(--ink)}
 .pillbtn{display:inline-flex;align-items:center;background:var(--navy);color:#fff;border-radius:999px;padding:13px 20px;font-weight:600;font-size:14.5px;text-decoration:none;transition:.2s}
 .pillbtn:hover{background:#1a2347}
 
 /* hero */
-.hero{padding:32px 0 0}
+.hero{padding:28px 0 0}
 .eyebrow{color:var(--blue);font-size:14.5px;font-weight:500}
 
 /* scenario chips, as the "Ana does the work" tabs */
@@ -201,8 +192,6 @@ footer{padding:22px 0 30px;color:var(--muted);font-size:13px}
 
 @media(max-width:700px){
   .container{padding:0 16px}
-  .nav .container{height:64px;gap:14px}.nav nav{display:none}.nav .pillbtn{margin-left:auto}
-  .logo{font-size:26px}
   .hero{padding:20px 0 0}
   .legend,.cue,.bar em{display:none}
   .chapter{font-size:11px;padding:5px 11px;top:10px;left:10px}
@@ -220,16 +209,6 @@ footer{padding:22px 0 30px;color:var(--muted);font-size:13px}
 </style>
 </head>
 <body>
-<header class="nav">
-  <div class="container">
-    <a class="logo" href="https://eonai.solutions/en" aria-label="eon.ai">
-      <svg viewBox="0 0 44 24" fill="none" stroke="#2563eb" stroke-width="3.2" stroke-linecap="round"><path d="M22 12c-3-5-6-8-10-8a8 8 0 100 16c4 0 7-3 10-8zm0 0c3 5 6 8 10 8a8 8 0 100-16c-4 0-7 3-10 8z"/></svg>
-      <span>eon<b>.ai</b></span>
-    </a>
-    <nav aria-label="Main"><a href="https://eonai.solutions/en#ana-demo">Ana</a><a href="#network" aria-current="page">Network</a><a href="https://eonai.solutions/pricing">Pricing</a></nav>
-    <a class="pillbtn" href="https://eonai.solutions/#demo">Book a demo</a>
-  </div>
-</header>
 
 <main class="container">
   <section class="hero">
