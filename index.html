@@ -10,140 +10,189 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Sans:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#03040a; --panel:#0a0d17; --panel2:#0f1320; --line:#1a2033; --line2:#262e47;
-  --text:#e9ecf6; --muted:#8c94ad; --dim:#5b637c;
-  --blue:#2567e7; --blue-d:#014bdb;
-  --tenant:#5cc8ff; --owner:#ffb454; --agency:#6ea0ff; --investor:#3ddc97;
-  --ana1:#7fb0ff; --ana2:#b69cff; --warn:#ffb454; --ok:#3ddc97;
-  --head:"Instrument Sans","Inter",system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --navy:#0a1024; --ink:#0a1024; --body:#4a5068; --muted:#646a82; --faint:#8b91a6;
+  --bg:#ffffff; --band:#f3f5f9; --card:#ffffff; --line:#e4e8f0; --line2:#d3d9e6;
+  --blue:#2563eb; --blue-d:#1d4fd0; --blue-t:#e8effd;
+  --tenant:#0e9ad9; --owner:#d97706; --agency:#0a1024; --investor:#059669; --ana:#2563eb; --grey:#64708c;
+  --green:#137a4b; --green-t:#e3f6ec; --amber:#b45309; --amber-t:#fef3e0; --red:#d11a2a; --red-t:#fde8ea;
+  --head:"Instrument Sans","Inter",system-ui,sans-serif; --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box;margin:0}
-html{color-scheme:dark}
-body{background:var(--bg);color:var(--text);font:400 14px/1.5 var(--body);min-height:100vh;
-  background-image:radial-gradient(900px 500px at 12% -10%,rgba(37,103,231,.18),transparent 60%),radial-gradient(800px 500px at 100% 110%,rgba(182,156,255,.10),transparent 60%);
-  -webkit-font-smoothing:antialiased}
+html{color-scheme:light}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.55 var(--font);-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;cursor:pointer}
-:focus-visible{outline:2px solid var(--ana1);outline-offset:3px;border-radius:8px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:10px}
+.container{max-width:1180px;margin:0 auto;padding:0 32px}
 
-.wrap{max-width:1320px;margin:0 auto;padding:28px 24px 40px}
-header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
-.brand{display:flex;align-items:center;gap:10px;font:600 20px var(--head);letter-spacing:-.01em}
-.brand i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--blue-d),var(--ana2));display:block;box-shadow:0 0 24px rgba(37,103,231,.55)}
-.brand span{color:var(--muted);font:400 13px var(--body);margin-left:6px;padding-left:12px;border-left:1px solid var(--line2)}
-.cta{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#05070d;border-radius:999px;padding:9px 18px;font-weight:600;text-decoration:none;font-size:13px}
-.cta:hover{background:#dfe7ff}
+/* nav, as on eonai.solutions */
+.nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid transparent}
+.nav .container{display:flex;align-items:center;gap:36px;height:76px}
+.logo{display:flex;align-items:center;gap:8px;font:600 30px var(--head);letter-spacing:-.04em;text-decoration:none;color:var(--navy)}
+.logo b{color:var(--blue);font-weight:600}
+.logo svg{width:44px;height:24px}
+.nav nav{display:flex;gap:30px;flex:1}
+.nav nav a{text-decoration:none;color:var(--body);font-weight:500;font-size:15px}
+.nav nav a:hover,.nav nav a[aria-current]{color:var(--ink)}
+.pillbtn{display:inline-flex;align-items:center;background:var(--navy);color:#fff;border-radius:999px;padding:13px 20px;font-weight:600;font-size:14.5px;text-decoration:none;transition:.2s}
+.pillbtn:hover{background:#1a2347}
 
-h1{font:600 clamp(28px,3.6vw,44px)/1.08 var(--head);letter-spacing:-.025em;max-width:30ch}
-h1 em{font-style:normal;background:linear-gradient(90deg,var(--ana1),var(--ana2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.lede{color:var(--muted);max-width:60ch;margin-top:14px;font-size:15px}
+/* hero */
+.hero{padding:56px 0 30px}
+.eyebrow{color:var(--blue);font-size:14.5px;font-weight:500}
+h1{font:600 clamp(36px,5vw,58px)/1.02 var(--head);letter-spacing:-.04em;color:var(--navy);max-width:15ch;margin-top:14px}
+h1 em{font-style:normal;color:var(--blue)}
+.lede{color:var(--body);font-size:18px;line-height:1.6;max-width:56ch;margin-top:20px}
 
-.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 14px;align-items:center}
-.tab{display:inline-flex;align-items:center;gap:9px;padding:9px 16px 9px 12px;border-radius:999px;border:1px solid var(--line2);background:var(--panel);font-weight:500;transition:.2s}
-.tab b{font-weight:400;color:var(--muted)}
-.tab i{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
-.tab:hover{border-color:var(--c);transform:translateY(-1px)}
-.tab[aria-pressed=true]{background:color-mix(in srgb,var(--c) 14%,var(--panel));border-color:var(--c)}
-.tab .soon{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--warn);border:1px solid rgba(255,180,84,.4);border-radius:999px;padding:1px 7px}
+/* scenario chips, as the "Ana does the work" tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:10px;margin:34px 0 18px;align-items:stretch}
+.tab{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;padding:10px 18px 11px;border-radius:14px;border:1px solid var(--line);background:#fff;transition:.2s;font-weight:500;font-size:14.5px;color:var(--ink)}
+.tab small{color:var(--blue);font-size:12px;font-weight:600;display:flex;gap:8px;align-items:center}
+.tab small i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+.tab:hover{border-color:var(--line2);box-shadow:0 6px 18px rgba(10,16,36,.06);transform:translateY(-1px)}
+.tab[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.tab[aria-pressed=true] small{color:#8fb0ff}
+.tab .soon{font-size:10px;font-weight:600;color:var(--amber);background:var(--amber-t);border-radius:999px;padding:1px 8px}
 .sp{flex:1}
-.ctl{display:inline-flex;gap:6px;align-items:center}
-.btn{border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:8px 14px;font-weight:500;font-size:13px;transition:.2s}
-.btn:hover{border-color:var(--ana1)}
-.btn.primary{background:linear-gradient(135deg,var(--blue-d),#5a4de0);border-color:transparent}
-.btn.primary:hover{filter:brightness(1.15)}
-.btn[aria-pressed=true]{border-color:var(--ana1);color:var(--ana1)}
+.ctl{display:inline-flex;gap:8px;align-items:center}
+.btn{border:1px solid var(--line2);background:#fff;border-radius:12px;padding:11px 18px;font-weight:600;font-size:14px;color:var(--ink);transition:.2s}
+.btn:hover{border-color:var(--navy)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:var(--blue-d)}
+.btn[aria-pressed=true]{background:var(--blue-t);border-color:var(--blue);color:var(--blue)}
 
-.grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:18px;align-items:start}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
 @media(max-width:1020px){.grid{grid-template-columns:1fr}}
 
-.stagebox{position:relative;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,#070a14,#04050b);overflow:hidden;aspect-ratio:1000/640;width:100%}
-.stagebox::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:40px 40px;opacity:.28;mask-image:radial-gradient(circle at 50% 50%,#000 20%,transparent 75%)}
+/* app window frame, as the hero mock */
+.window{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 60px -30px rgba(10,16,36,.22),0 2px 6px rgba(10,16,36,.04);overflow:hidden}
+.bar{display:flex;align-items:center;gap:7px;padding:12px 16px;border-bottom:1px solid var(--line);background:#fff}
+.bar i{width:10px;height:10px;border-radius:50%}
+.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar span{margin-left:14px;font-size:11.5px;color:var(--muted);background:var(--band);border-radius:8px;padding:4px 12px}
+.bar em{margin-left:auto;font-style:normal;font-size:11.5px;color:var(--muted)}
+.stagebox{position:relative;background:var(--band);overflow:hidden;aspect-ratio:1000/640;width:100%}
+.stagebox::before{content:"";position:absolute;inset:0;background-image:radial-gradient(#cfd6e5 1.2px,transparent 1.2px);background-size:26px 26px;opacity:.7}
 svg.stage{position:absolute;inset:0;width:100%;height:100%}
 .overlay{position:absolute;inset:0;pointer-events:none}
 
 /* edges */
-.edge{fill:none;stroke:#222a43;stroke-width:1.5;transition:stroke .3s,stroke-width .3s}
-.edge.preview{stroke-dasharray:3 6}
-.edge.live{stroke:var(--c,#6ea0ff);stroke-width:2.4;filter:drop-shadow(0 0 6px var(--c,#6ea0ff))}
+.edge{fill:none;stroke:#c9d1e2;stroke-width:1.6;transition:stroke .3s,stroke-width .3s}
+.edge.preview{stroke-dasharray:4 7}
+.edge.live{stroke:var(--c,#2563eb);stroke-width:2.8}
 
 /* nodes */
 .node{cursor:pointer;outline:none}
-.node .disc{fill:#0a0e1b;stroke:var(--c);stroke-width:1.6;transition:.25s}
-.node .halo{fill:var(--c);opacity:.08;transition:.3s}
+.node .disc{fill:#fff;stroke:var(--line2);stroke-width:1.5;transition:.25s;filter:drop-shadow(0 8px 14px rgba(10,16,36,.12))}
+.node .halo{fill:var(--c);opacity:.09;transition:.3s}
 .node:hover .halo,.node:focus-visible .halo,.node.active .halo{opacity:.2}
-.node:hover .disc,.node:focus-visible .disc,.node.active .disc{stroke-width:2.8;fill:#0d1224}
-.node .ico{fill:none;stroke:var(--c);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.node text{fill:var(--text);font:600 15px var(--head);text-anchor:middle}
-.node text.eyebrow{fill:var(--muted);font:500 10px var(--body);letter-spacing:.14em;text-transform:uppercase}
-.node text.sub{fill:var(--dim);font:400 11px var(--body)}
-.node.small text{font-size:12.5px}
-.node .ping{fill:none;stroke:var(--c);stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center}
+.node:hover .disc,.node:focus-visible .disc,.node.active .disc{stroke:var(--c);stroke-width:3}
+.node .ico{fill:none;stroke:var(--c);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.node.solid .disc{fill:var(--c);stroke:var(--c)}
+.node.solid .ico{stroke:#fff}
+.node text{fill:var(--ink);font:600 16px var(--head);text-anchor:middle;letter-spacing:-.01em}
+.node text.eyebrow{fill:var(--blue);font:500 11.5px var(--font);letter-spacing:0;text-transform:none}
+.node text.sub{fill:var(--muted);font:400 11.5px var(--font);letter-spacing:0}
+.node.small text{font-size:13px}
+.node.small .disc{fill:#fff}
+.node .ping{fill:none;stroke:var(--c);stroke-width:2.5;opacity:0;transform-box:fill-box;transform-origin:center}
 .node.pulse .ping{animation:ping .8s ease-out}
 @keyframes ping{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
-.node.waiting .disc{stroke:var(--warn);stroke-width:3;animation:wait 1s ease-in-out infinite}
-@keyframes wait{50%{stroke-opacity:.35}}
-.hint-ring{fill:none;stroke:var(--c);stroke-width:1.5;stroke-dasharray:2 7;opacity:.7;animation:spin 18s linear infinite;transform-box:fill-box;transform-origin:center}
+.node.waiting .disc{stroke:var(--owner);stroke-width:4;animation:wait 1s ease-in-out infinite}
+@keyframes wait{50%{stroke-opacity:.3}}
+.hint-ring{fill:none;stroke:var(--c);stroke-width:1.6;stroke-dasharray:2 7;opacity:.75;animation:spin 18s linear infinite;transform-box:fill-box;transform-origin:center}
 body.running .hint-ring{opacity:0}
 @keyframes spin{to{transform:rotate(360deg)}}
-.ana-orbit{fill:none;stroke:url(#anaGrad);stroke-width:2;stroke-dasharray:40 90;transform-box:fill-box;transform-origin:center;animation:spin 9s linear infinite}
-.ana.busy .ana-orbit{animation-duration:1.6s;stroke-width:3.5}
-.ana-core{fill:url(#anaCore)}
+.ana-orbit{fill:none;stroke:url(#anaGrad);stroke-width:2.5;stroke-dasharray:40 90;stroke-linecap:round;transform-box:fill-box;transform-origin:center;animation:spin 9s linear infinite}
+.ana.busy .ana-orbit{animation-duration:1.6s;stroke-width:4}
+.ana-core{fill:url(#anaCore)!important;stroke:none!important}
 .ana .ico{stroke:#fff}
+.ana text{fill:var(--ink)}
 
-/* bubbles */
-.bubble{position:absolute;max-width:min(240px,46%);background:rgba(12,16,30,.94);border:1px solid var(--c,var(--line2));border-radius:14px;padding:8px 11px 9px;font-size:12.5px;line-height:1.4;box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 22px color-mix(in srgb,var(--c,#6ea0ff) 25%,transparent);
-  opacity:0;transform:translateY(6px) scale(.97);transition:.3s;pointer-events:auto;backdrop-filter:blur(6px);z-index:3}
+/* bubbles: person = navy, Ana = grey, Eon = white card, as in the site's chat demo */
+.bubble{position:absolute;max-width:min(250px,46%);background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:9px 13px 10px;font-size:13px;line-height:1.42;box-shadow:0 14px 34px -10px rgba(10,16,36,.25);
+  opacity:0;transform:translateY(6px) scale(.97);transition:.3s;pointer-events:auto;z-index:3}
 .bubble.in{opacity:1;transform:none}
-.bubble .who{display:block;font:600 10px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--c);margin-bottom:2px}
-.bubble .tag{color:var(--dim);font-weight:400;letter-spacing:.04em;text-transform:none;margin-left:5px}
-.bubble.approve{--c:var(--warn);border-width:1.5px}
-.bubble button{margin-top:8px;display:block;width:100%;background:var(--warn);color:#1a1100;border:0;border-radius:9px;padding:6px 10px;font-weight:600;font-size:12px}
-.bubble button:hover{filter:brightness(1.1)}
-.bubble .auto{display:block;margin-top:5px;font-size:10.5px;color:var(--dim)}
+.bubble .who{display:block;font:600 11px var(--font);color:var(--c);margin-bottom:2px}
+.bubble .tag{color:var(--faint);font-weight:400;margin-left:6px}
+.bubble.v-person{background:var(--navy);border-color:var(--navy);color:#fff;border-bottom-left-radius:5px}
+.bubble.v-person .who{color:#9db8ff}.bubble.v-person .tag{color:#8c94ae}
+.bubble.v-ana{background:#eef1f8;border-color:#e0e5f0;border-bottom-left-radius:5px}
+.bubble.v-ana .who{color:var(--blue)}
+.bubble.approve{background:var(--amber-t);border:1.5px solid #f2c078;color:var(--ink)}
+.bubble.approve .who{color:var(--amber)}
+.bubble button{margin-top:9px;display:block;width:100%;background:var(--navy);color:#fff;border:0;border-radius:10px;padding:8px 10px;font-weight:600;font-size:12.5px}
+.bubble button:hover{background:#1a2347}
+.bubble .auto{display:block;margin-top:6px;font-size:10.5px;color:var(--muted)}
 
-.legend{position:absolute;left:14px;bottom:12px;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--dim);z-index:2}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);padding:12px 18px;border-top:1px solid var(--line);background:#fff}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:8px;height:8px;border-radius:50%;display:block}
-.pill{position:absolute;right:14px;top:12px;z-index:2;font-size:11px;color:var(--muted);border:1px solid var(--line2);border-radius:999px;padding:4px 11px;background:rgba(7,10,20,.7)}
-.pill b{color:var(--ana1);font-weight:500}
-.cue{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-size:12px;color:var(--muted);z-index:2;transition:opacity .4s;white-space:nowrap}
+.cue{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-size:12.5px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 14px;z-index:2;transition:opacity .4s;white-space:nowrap;box-shadow:0 4px 12px rgba(10,16,36,.06)}
 body.running .cue,body.started .cue{opacity:0}
 
-/* side panel */
+/* side */
 .side{display:flex;flex-direction:column;gap:14px;min-width:0}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
-.eyebrow{font:500 10.5px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--c,var(--muted))}
-.card h2{font:600 22px/1.15 var(--head);letter-spacing:-.015em;margin:6px 0 6px}
-.card p{color:var(--muted);font-size:13px}
-.badge{display:inline-block;margin-top:10px;font-size:11px;color:var(--warn);border:1px solid rgba(255,180,84,.4);border-radius:999px;padding:2px 10px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px}
+.card.dashed{border-style:dashed}
+.card h2{font:600 24px/1.12 var(--head);letter-spacing:-.03em;margin:6px 0 8px;color:var(--navy)}
+.card p{color:var(--body);font-size:14px}
+.card .eyebrow{color:var(--blue)}
+.badge{display:inline-block;margin-top:12px;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-t);border-radius:999px;padding:3px 11px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stat{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-.stat b{display:block;font:600 24px var(--head);letter-spacing:-.02em}
-.stat span{font-size:11px;color:var(--muted);line-height:1.3;display:block}
-.steps{list-style:none;padding:0;display:flex;flex-direction:column;gap:2px;max-height:360px;overflow:auto;scroll-behavior:smooth;margin:0 -6px;padding:0 6px}
-.steps li{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:8px 8px;border-radius:12px;opacity:.38;transition:.3s;font-size:13px}
-.steps li .n{width:22px;height:22px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-size:10.5px;color:var(--muted);margin-top:1px}
-.steps li .route{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:1px}
-.steps li.active{opacity:1;background:var(--panel2);box-shadow:inset 0 0 0 1px var(--line2)}
-.steps li.active .n{border-color:var(--ana1);color:var(--ana1)}
-.steps li.done{opacity:.85}
-.steps li.done .n{background:var(--ok);border-color:var(--ok);color:#03150c}
-.steps li.human .n{border-color:var(--warn);color:var(--warn)}
-.steps li.human.done .n{background:var(--warn);color:#1a1100}
-.steps li .ana-tag{color:var(--ana1)}
-.empty{color:var(--dim);font-size:13px;padding:6px 2px}
-.fine{font-size:11.5px;color:var(--dim);line-height:1.5}
-.fine a{color:var(--muted)}
-.info dl{display:grid;gap:8px;margin-top:10px}
-.info dt{font-weight:600;font-size:13px}
-.info dd{color:var(--muted);font-size:12.5px}
+.stat{background:var(--band);border-radius:14px;padding:12px 14px}
+.stat span{font-size:11.5px;color:var(--muted);line-height:1.3;display:block}
+.stat b{display:block;font:600 24px var(--head);letter-spacing:-.03em;margin-top:2px}
+.stat i{display:block;height:4px;border-radius:4px;background:#dfe4ee;margin-top:8px;overflow:hidden}
+.stat i u{display:block;height:100%;width:0;background:var(--blue);transition:width .5s;text-decoration:none}
+.stat:nth-child(2) i u{background:var(--blue)}.stat:nth-child(3) i u{background:#16a34a}.stat:nth-child(1) i u{background:var(--navy)}
+.sec-title{font-size:12.5px;font-weight:600;color:var(--blue);margin-bottom:8px}
+.steps{list-style:none;padding:0;display:flex;flex-direction:column;gap:2px;max-height:360px;overflow:auto;scroll-behavior:smooth;margin:0 -8px;padding:0 8px}
+.steps li{display:grid;grid-template-columns:24px 1fr;gap:12px;padding:10px;border-radius:14px;opacity:.4;transition:.3s;font-size:13.5px;line-height:1.45}
+.steps li .n{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line2);display:grid;place-items:center;font-size:11px;font-weight:600;color:var(--muted);margin-top:1px;background:#fff}
+.steps li .route{display:block;font-size:11.5px;color:var(--muted);margin-bottom:1px}
+.steps li.active{opacity:1;background:var(--band)}
+.steps li.active .n{border-color:var(--blue);color:var(--blue)}
+.steps li.done{opacity:1}
+.steps li.done .n{background:var(--green);border-color:var(--green);color:#fff}
+.steps li.human .n{border-color:#f2c078;color:var(--amber)}
+.steps li.human.done .n{background:var(--owner);border-color:var(--owner);color:#fff}
+.steps li .ana-tag{color:var(--blue);font-weight:600}
+.chip{display:inline-block;font-size:10.5px;font-weight:600;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:1px}
+.chip.rec{background:var(--green-t);color:var(--green)}
+.chip.human{background:var(--amber-t);color:var(--amber)}
+.empty{color:var(--faint);font-size:13.5px;padding:6px 2px}
+.fine{font-size:12px;color:var(--muted);line-height:1.55;padding:0 4px}
+.fine a{color:var(--blue)}
+.info dl{display:grid;gap:10px;margin-top:12px}
+.info dt{font-weight:600;font-size:13.5px}
+.info dd{color:var(--body);font-size:13px}
+
+/* navy trust band, as the site's dark sections */
+.band{background:var(--navy);color:#fff;margin-top:64px;padding:72px 0 76px}
+.band h2{font:600 clamp(30px,4vw,46px)/1.05 var(--head);letter-spacing:-.04em;max-width:18ch}
+.band p.l{color:#a3abc4;font-size:17px;max-width:52ch;margin-top:16px}
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:44px;border-top:1px solid #222b49}
+.trust div{padding:22px 24px 0 0}
+.trust b{display:block;font:600 16px var(--head);margin-bottom:4px}
+.trust span{color:#8c94ae;font-size:14px}
+@media(max-width:860px){.trust{grid-template-columns:1fr 1fr}}
+.band .cta{display:inline-flex;margin-top:40px;background:#fff;color:var(--navy)}
+.band .cta:hover{background:#dfe7ff}
+footer{padding:22px 0 30px;color:var(--muted);font-size:13px}
 
 @media(max-width:700px){
-  .wrap{padding:18px 14px 32px}
-  .legend,.cue,.pill{display:none}
+  .container{padding:0 16px}
+  .nav .container{height:64px;gap:14px}.nav nav{display:none}.nav .pillbtn{margin-left:auto}
+  .logo{font-size:26px}
+  .hero{padding:32px 0 12px}
+  .lede{font-size:16px}
+  .legend,.cue,.bar em{display:none}
   .node text{font-size:25px}.node.small text{font-size:22px}
-  .node text.eyebrow{font-size:15px}.node text.sub{font-size:17px}
+  .node text.eyebrow{font-size:17px}.node text.sub{font-size:17px}
   .bubble{font-size:11.5px;padding:6px 9px;max-width:58%}
-  .brand span{display:none}
+  .tab{flex:1 1 calc(50% - 10px)}
+  .trust{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){
   .hint-ring,.ana-orbit,.node.waiting .disc{animation:none}
@@ -153,42 +202,68 @@ body.running .cue,body.started .cue{opacity:0}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <div class="brand"><i></i>eon<span>Persona flow simulator</span></div>
-    <a class="cta" href="https://eonai.solutions/#demo">Book a demo →</a>
-  </header>
+<header class="nav">
+  <div class="container">
+    <a class="logo" href="https://eonai.solutions/en" aria-label="eon.ai">
+      <svg viewBox="0 0 44 24" fill="none" stroke="#2563eb" stroke-width="3.2" stroke-linecap="round"><path d="M22 12c-3-5-6-8-10-8a8 8 0 100 16c4 0 7-3 10-8zm0 0c3 5 6 8 10 8a8 8 0 100-16c-4 0-7 3-10 8z"/></svg>
+      <span>eon<b>.ai</b></span>
+    </a>
+    <nav aria-label="Main"><a href="https://eonai.solutions/en#ana-demo">Ana</a><a href="#network" aria-current="page">Network</a><a href="https://eonai.solutions/pricing">Pricing</a></nav>
+    <a class="pillbtn" href="https://eonai.solutions/#demo">Book a demo</a>
+  </div>
+</header>
 
-  <h1>One agency. Four people. <em>Ana</em> in the middle.</h1>
-  <p class="lede">Every message, repair, payment and deadline in a rental moves between the same few people. Pick one and watch the chain reaction: Ana answers, Eon records, and a person approves anything that involves money.</p>
+<main class="container">
+  <section class="hero">
+    <div class="eyebrow">The network behind every tenancy</div>
+    <h1>One agency. Four people. <em>Ana</em> in the middle.</h1>
+    <p class="lede">Every message, repair, payment and deadline in a rental moves between the same few people. Pick one and watch the chain reaction: Ana answers, Eon keeps the record, and a person approves anything that involves money.</p>
+    <div class="tabs" id="tabs" role="group" aria-label="Choose a persona to simulate"></div>
+  </section>
 
-  <div class="tabs" id="tabs" role="group" aria-label="Choose a persona to simulate"></div>
-
-  <div class="grid">
-    <div class="stagebox" id="stagebox">
-      <div class="cue">Click any node to start its story</div>
-      <div class="pill">Scripted demo · sample data</div>
-      <svg class="stage" id="stage" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet" aria-label="Network graph of tenants, home owners, agencies, investors, vendors and authorities connected through Ana, the AI agent"></svg>
-      <div class="overlay" id="overlay"></div>
-      <div class="legend">
-        <span><i style="background:var(--ana1)"></i>Ana (AI) at work</span>
-        <span><i style="background:var(--warn)"></i>Needs a person</span>
-        <span><i style="background:var(--ok)"></i>Recorded in Eon</span>
+  <div class="grid" id="network">
+    <div class="window">
+      <div class="bar"><i></i><i></i><i></i><span>app.eonai.solutions/network</span><em>A scripted demonstration with sample data</em></div>
+      <div class="stagebox" id="stagebox">
+        <div class="cue">Click any node to start its story</div>
+        <svg class="stage" id="stage" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet" aria-label="Network graph of tenants, home owners, agencies, investors, vendors and authorities connected through Ana, the AI agent"></svg>
+        <div class="overlay" id="overlay"></div>
       </div>
+      <div class="legend">
+        <span><i style="background:var(--blue)"></i>Ana at work</span>
+        <span><i style="background:var(--owner)"></i>Needs a person</span>
+        <span><i style="background:#16a34a"></i>Recorded in Eon</span>
+        </div>
     </div>
 
     <aside class="side" aria-live="polite">
       <section class="card" id="story"></section>
       <div class="stats">
-        <div class="stat"><b id="s-steps">0</b><span>steps run</span></div>
-        <div class="stat"><b id="s-ana">0</b><span>handled by Ana</span></div>
-        <div class="stat"><b id="s-human">0</b><span>approved by a person</span></div>
+        <div class="stat"><span>Steps run</span><b id="s-steps">0</b><i><u id="p-steps"></u></i></div>
+        <div class="stat"><span>Handled by Ana</span><b id="s-ana">0</b><i><u id="p-ana"></u></i></div>
+        <div class="stat"><span>Approved by a person</span><b id="s-human">0</b><i><u id="p-human"></u></i></div>
       </div>
-      <section class="card"><ol class="steps" id="steps"><li class="empty" style="opacity:1;display:block">Steps will appear here as the simulation runs.</li></ol></section>
-      <p class="fine">Flows follow what <a href="https://eonai.solutions/en">eonai.solutions</a> describes: Ana on WhatsApp, repairs and vendors, deposit deadlines, owner statements. The investor flow reflects the “Sales department” listed as <em>coming soon</em>. Money, leases and prices always go through a person.</p>
+      <section class="card dashed"><div class="sec-title">Meanwhile, in Eon</div><ol class="steps" id="steps"><li class="empty" style="opacity:1;display:block">Steps will appear here as the simulation runs.</li></ol></section>
+      <p class="fine">Flows follow what <a href="https://eonai.solutions/en">eonai.solutions</a> describes: Ana on WhatsApp, repairs and vendors, deposit deadlines, owner statements. The investor flow previews the “Sales department”, listed as <em>coming soon</em>. Money, leases and prices always go through a person.</p>
     </aside>
   </div>
-</div>
+</main>
+
+<section class="band">
+  <div class="container">
+    <div class="eyebrow" style="color:#8fb0ff">Built for trust</div>
+    <h2 style="margin-top:12px">You approve what matters.</h2>
+    <p class="l">Ana handles the repetitive part on her own. Every decision involving money, leases or prices comes to a person, and you can step into any conversation and take over.</p>
+    <div class="trust">
+      <div><b>Only your team sees your data</b><span>Each agency kept apart from the rest</span></div>
+      <div><b>Automatic deletion</b><span>Documents from applicants who don’t get the flat delete themselves</span></div>
+      <div><b>Providers published</b><span>The sub-processor list is public</span></div>
+      <div><b>You approve what matters</b><span>Money, leases and prices go through a person</span></div>
+    </div>
+    <a class="pillbtn cta" href="https://eonai.solutions/#demo">Book a demo</a>
+  </div>
+</section>
+<footer><div class="container">Independent prototype built from the public eonai.solutions site. Sample data only.</div></footer>
 
 <script>
 (() => {
@@ -209,13 +284,13 @@ const ICONS = {
   authority: 'M3 9l9-5 9 5M5 9v9M9 9v9M15 9v9M19 9v9M3 21h18'
 };
 const N = {
-  tenant:   { x:150, y:132, r:42, c:'#5cc8ff', eyebrow:'For', name:'Tenants',     who:'Marc',       icon:'user',     persona:true, bubble:'below' },
-  owner:    { x:850, y:132, r:42, c:'#ffb454', eyebrow:'For', name:'Home owners', who:'Montserrat', icon:'owner',    persona:true, bubble:'below' },
-  agency:   { x:150, y:492, r:42, c:'#6ea0ff', eyebrow:'For', name:'Agencies',    who:'Carlos',     icon:'agency',   persona:true, bubble:'above' },
-  investor: { x:850, y:492, r:42, c:'#3ddc97', eyebrow:'',    name:'Investors',   who:'Investor',   icon:'investor', persona:true, bubble:'above' },
-  ana:      { x:500, y:312, r:58, c:'#9bb6ff', name:'Ana', sub:'AI copilot · WhatsApp', who:'Ana', icon:'ana', bubble:'side' },
-  vendor:   { x:500, y:70,  r:28, c:'#9aa4c4', name:'Vendors', sub:'Puig Plumbing', who:'Puig Plumbing', icon:'vendor', small:true, bubble:'below' },
-  authority:{ x:500, y:568, r:28, c:'#9aa4c4', name:'Authorities', sub:'INCASÒL · ATC', who:'INCASÒL', icon:'authority', small:true, bubble:'above' }
+  tenant:   { x:150, y:132, r:42, c:'#0e9ad9', eyebrow:'For', name:'Tenants',     who:'Marc',       icon:'user',     persona:true, bubble:'below' },
+  owner:    { x:850, y:132, r:42, c:'#d97706', eyebrow:'For', name:'Home owners', who:'Montserrat', icon:'owner',    persona:true, bubble:'below' },
+  agency:   { x:150, y:492, r:42, c:'#0a1024', solid:true, eyebrow:'For', name:'Agencies',    who:'Carlos',     icon:'agency',   persona:true, bubble:'above' },
+  investor: { x:850, y:492, r:42, c:'#059669', eyebrow:'',    name:'Investors',   who:'Investor',   icon:'investor', persona:true, bubble:'above' },
+  ana:      { x:500, y:312, r:58, c:'#2563eb', name:'Ana', sub:'AI copilot · WhatsApp', who:'Ana', icon:'ana', bubble:'side' },
+  vendor:   { x:500, y:70,  r:28, c:'#64708c', name:'Vendors', sub:'Puig Plumbing', who:'Puig Plumbing', icon:'vendor', small:true, bubble:'below' },
+  authority:{ x:500, y:568, r:28, c:'#64708c', name:'Authorities', sub:'INCASÒL · ATC', who:'INCASÒL', icon:'authority', small:true, bubble:'above' }
 };
 const E = [
   ['tenant','ana',0],['owner','ana',0],['agency','ana',0],['investor','ana',0,1],['vendor','ana',0],['authority','ana',0],
@@ -227,7 +302,7 @@ const edgeFor = (a,b) => E.find(e => e.key === [a,b].sort().join('|'));
 // m: what is said / happens (shown in bubble). note: what to read in the step list.
 // kind 'approve' = a person decides. tag = channel label.
 const S = {
-  tenant: { label:'Tenants', who:'Marc · Verdi 100, 3º B', title:'A leak at 10pm',
+  tenant: { quote:'“The pipe is leaking in flat 3B”', label:'Tenants', who:'Marc · Verdi 100, 3º B', title:'A leak at 10pm',
     blurb:'Marc writes on the agency’s WhatsApp line. No one is on call, and Ana is.',
     steps:[
       { f:'tenant', t:'ana', m:'Hi, the pipe under the sink is leaking 😩', tag:'WhatsApp', note:'Marc reports a leak on the agency’s WhatsApp line.' },
@@ -240,7 +315,7 @@ const S = {
       { f:'ana', t:'tenant', m:'Plumber comes Thursday at 10:00. I’ll let you know if it changes.', tag:'WhatsApp', note:'Marc gets the appointment on WhatsApp.' },
       { f:'ana', t:'owner', m:'Repair at Verdi 100. The invoice will land on your statement.', tag:'Owner portal', rec:true, note:'The invoice is queued for the owner’s statement.' }
     ]},
-  owner: { label:'Home owners', who:'Montserrat Ferrer', title:'“What are you transferring this month?”',
+  owner: { quote:'“How much are you transferring this month?”', label:'Home owners', who:'Montserrat Ferrer', title:'“What are you transferring this month?”',
     blurb:'Owners call to ask what came in. Ana already knows, without anyone digging.',
     steps:[
       { f:'owner', t:'ana', m:'How much are you transferring this month?', tag:'WhatsApp', note:'Montserrat asks about October on WhatsApp.' },
@@ -251,7 +326,7 @@ const S = {
       { f:'owner', t:'ana', m:'And what happened with the boiler?', tag:'WhatsApp', note:'Follow-up question, the one that usually becomes a phone call.' },
       { f:'ana', t:'owner', m:'Puig Plumbing fixed it Thursday. Invoice is on the statement.', tag:'WhatsApp', note:'Ana answers from the repair history.' }
     ]},
-  agency: { label:'Agencies', who:'Carlos · Monday 08:30', title:'Morning, with the deadlines watched',
+  agency: { quote:'“Who hasn’t paid October?”', label:'Agencies', who:'Carlos · Monday 08:30', title:'Morning, with the deadlines watched',
     blurb:'Ana and Eon work the day’s admin; the agency decides what matters.',
     steps:[
       { f:'ana', t:'agency', m:'Good morning, Carlos. Modelo 600 in 3 days · Deposit Oriol Casas in 10.', tag:'Morning alert', rec:true, note:'Eon’s morning alert: deadlines worked out from each lease.' },
@@ -263,7 +338,7 @@ const S = {
       { f:'ana', t:'tenant', m:'Agreed: the 5th. I’ll remind you the day before.', tag:'WhatsApp', note:'Ana confirms and schedules the follow-up.' },
       { f:'agency', t:'authority', m:'Deposit lodged · Oriol Casas · INCASÒL', tag:'Filing', rec:true, note:'The deposit is lodged before the deadline, no surcharge.' }
     ]},
-  investor: { label:'Investors', who:'Via a personal investor link', title:'A deal built on real rents',
+  investor: { quote:'“What’s the yield on this flat?”', label:'Investors', who:'Via a personal investor link', title:'A deal built on real rents',
     blurb:'Preview of the Sales department: investor links using the actual rents in the portfolio.', preview:true,
     steps:[
       { f:'investor', t:'ana', m:'Opens an investor link: Verdi 100, 3º B', tag:'Investor link', note:'The investor opens a link the agency sent.' },
@@ -289,10 +364,10 @@ const INFO = {
 const svg = $('#stage'), overlay = $('#overlay'), stagebox = $('#stagebox');
 const defs = el('defs', {}, svg);
 const g1 = el('linearGradient', { id:'anaGrad', x1:0, y1:0, x2:1, y2:1 }, defs);
-el('stop', { offset:0, 'stop-color':'#7fb0ff' }, g1); el('stop', { offset:1, 'stop-color':'#b69cff' }, g1);
+el('stop', { offset:0, 'stop-color':'#6b9bff' }, g1); el('stop', { offset:1, 'stop-color':'#2563eb' }, g1);
 const g2 = el('radialGradient', { id:'anaCore', cx:.35, cy:.3, r:.9 }, defs);
-el('stop', { offset:0, 'stop-color':'#4a6fe0' }, g2); el('stop', { offset:1, 'stop-color':'#2a1f78' }, g2);
-const bg = el('circle', { cx:500, cy:312, r:250, fill:'url(#anaGrad)', opacity:.05 }, svg);
+el('stop', { offset:0, 'stop-color':'#4b82f5' }, g2); el('stop', { offset:1, 'stop-color':'#1646c4' }, g2);
+const bg = el('circle', { cx:500, cy:312, r:250, fill:'url(#anaGrad)', opacity:.07 }, svg);
 
 const edgeG = el('g', {}, svg), pktG = el('g', {}, svg), nodeG = el('g', {}, svg);
 function ctrl(e) { const A = N[e.a], B = N[e.b], mx = (A.x+B.x)/2, my = (A.y+B.y)/2, dx = B.x-A.x, dy = B.y-A.y; return { x: mx - dy*e.bend, y: my + dx*e.bend }; }
@@ -302,18 +377,18 @@ E.forEach(e => { const A = N[e.a], B = N[e.b], C = ctrl(e);
   e.el = el('path', { class:'edge' + (e.preview ? ' preview' : ''), d:`M${A.x} ${A.y} Q${C.x} ${C.y} ${B.x} ${B.y}` }, edgeG); });
 
 Object.entries(N).forEach(([id, n]) => {
-  const g = el('g', { class:`node ${id === 'ana' ? 'ana ' : ''}${n.small ? 'small' : ''}`, tabindex:0, role:'button',
+  const g = el('g', { class:`node ${id === 'ana' ? 'ana ' : ''}${n.solid ? 'solid ' : ''}${n.small ? 'small' : ''}`, tabindex:0, role:'button',
     'aria-label': n.persona ? `Run the ${n.name} story` : `About ${n.name}`, style:`--c:${n.c}`, 'data-id':id }, nodeG);
   n.g = g;
   el('circle', { class:'halo', cx:n.x, cy:n.y, r:n.r+16 }, g);
   if (n.persona) el('circle', { class:'hint-ring', cx:n.x, cy:n.y, r:n.r+10 }, g);
-  if (id === 'ana') { el('circle', { class:'ana-orbit', cx:n.x, cy:n.y, r:n.r+9 }, g); el('circle', { class:'disc ana-core', cx:n.x, cy:n.y, r:n.r }, g); g.querySelector('.disc').style.stroke = '#9bb6ff'; }
+  if (id === 'ana') { el('circle', { class:'ana-orbit', cx:n.x, cy:n.y, r:n.r+9 }, g); el('circle', { class:'disc ana-core', cx:n.x, cy:n.y, r:n.r }, g) }
   else el('circle', { class:'disc', cx:n.x, cy:n.y, r:n.r }, g);
   el('circle', { class:'ping', cx:n.x, cy:n.y, r:n.r }, g);
   const s = n.r / 24 * (id === 'ana' ? .62 : .78);
   const ig = el('g', { transform:`translate(${n.x-12*s} ${n.y-12*s}) scale(${s})` }, g);
   el('path', { class:'ico', d:ICONS[n.icon], 'vector-effect':'non-scaling-stroke' }, ig);
-  const ty = n.y + n.r + (n.small ? 20 : 26);
+  const ty = n.y + n.r + (n.small ? 20 : 32);
   if (n.eyebrow) { const t = el('text', { class:'eyebrow', x:n.x, y:ty-16 }, g); t.textContent = n.eyebrow; }
   const t = el('text', { x:n.x, y: n.eyebrow ? ty+2 : ty-(n.persona ? 0 : 0) }, g); t.textContent = n.name;
   if (n.sub) { const t2 = el('text', { class:'sub', x:n.x, y:ty+17 }, g); t2.textContent = n.sub; }
@@ -321,24 +396,25 @@ Object.entries(N).forEach(([id, n]) => {
   g.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pick(id); } });
 });
 // investor has no eyebrow: keep label alignment consistent with the others
-N.investor.g.querySelector('text:not(.eyebrow)').setAttribute('y', N.investor.y + N.investor.r + 28);
+N.investor.g.querySelector('text:not(.eyebrow)').setAttribute('y', N.investor.y + N.investor.r + 34);
 
 /* ---------- tabs ---------- */
 const tabs = $('#tabs');
+const ROLE = { tenant:'Tenant', owner:'Owner', agency:'Agency', investor:'Investor' };
 const mkTab = k => { const s = S[k], b = document.createElement('button'); b.className = 'tab'; b.style.setProperty('--c', N[k].c); b.setAttribute('aria-pressed', 'false'); b.dataset.k = k;
-  b.innerHTML = `<i></i>${k === 'investor' ? '' : 'For '}<b>${s.label}</b>${s.preview ? '<span class="soon">preview</span>' : ''}`; b.onclick = () => pick(k); tabs.appendChild(b); };
+  b.innerHTML = `<small><i></i>${ROLE[k]}${s.preview ? '<span class="soon">preview</span>' : ''}</small>${s.quote}`; b.onclick = () => pick(k); tabs.appendChild(b); };
 ['tenant','owner','agency','investor'].forEach(mkTab);
 tabs.insertAdjacentHTML('beforeend', '<span class="sp"></span><span class="ctl"><button class="btn primary" id="full">▶ Run a full day</button><button class="btn" id="speed" aria-pressed="false" title="Toggle speed">2× speed</button><button class="btn" id="stop">Reset</button></span>');
 
 /* ---------- engine ---------- */
 let runId = 0, speed = 1, flying = new Set(), bubbles = new Map(), counters = { steps:0, ana:0, human:0 };
 const sleep = (ms, id) => new Promise(r => setTimeout(r, ms / speed)).then(() => id === runId);
-const setStat = () => { $('#s-steps').textContent = counters.steps; $('#s-ana').textContent = counters.ana; $('#s-human').textContent = counters.human; };
+const setStat = () => { const mx = Math.max(counters.steps, 1); $('#p-steps').style.width = counters.steps ? '100%' : '0'; $('#p-ana').style.width = (counters.ana / mx * 100) + '%'; $('#p-human').style.width = (counters.human / mx * 100) + '%'; $('#s-steps').textContent = counters.steps; $('#s-ana').textContent = counters.ana; $('#s-human').textContent = counters.human; };
 
 function clearBubbles() { bubbles.forEach(b => b.remove()); bubbles.clear(); }
 function showBubble(id, html, opts = {}) {
   const n = N[id]; bubbles.get(id)?.remove();
-  const b = document.createElement('div'); b.className = 'bubble' + (opts.approve ? ' approve' : ''); b.style.setProperty('--c', n.c); b.innerHTML = html; overlay.appendChild(b); bubbles.set(id, b);
+  const b = document.createElement('div'); b.className = 'bubble' + (opts.approve ? ' approve' : '') + (opts.v ? ' v-' + opts.v : ''); b.style.setProperty('--c', n.c); b.innerHTML = html; overlay.appendChild(b); bubbles.set(id, b);
   const W = stagebox.clientWidth, H = stagebox.clientHeight, k = W / 1000, bw = b.offsetWidth, bh = b.offsetHeight;
   let x = n.x * k, y = n.y * k, left = x - bw/2, top;
   const gap = (n.r + (n.small ? 22 : 46)) * k;
@@ -381,8 +457,8 @@ function buildList(key) {
   stepsEl.innerHTML = '';
   S[key].steps.forEach((s, i) => {
     const li = document.createElement('li'); if (s.approve) li.className = 'human';
-    const route = s.approve ? 'Needs a person · ' + N[s.approve].who : `${N[s.f].who} → ${N[s.t].who}${s.tag ? ' · ' + s.tag : ''}`;
-    li.innerHTML = `<span class="n">${i+1}</span><span><span class="route">${s.f === 'ana' || s.t === 'ana' ? '<span class="ana-tag">✦</span> ' : ''}${route}</span>${s.note}</span>`;
+    const route = s.approve ? N[s.approve].who + ' decides' : `${N[s.f].who} → ${N[s.t].who}${s.tag ? ' · ' + s.tag : ''}`;
+    li.innerHTML = `<span class="n">${i+1}</span><span><span class="route">${s.f === 'ana' || s.t === 'ana' ? '<span class="ana-tag">✦</span> ' : ''}${route}</span>${s.note}${s.approve ? '<span class="chip human">Needs a person</span>' : s.rec ? '<span class="chip rec">Recorded in Eon</span>' : ''}</span>`;
     stepsEl.appendChild(li);
   });
 }
@@ -421,9 +497,9 @@ async function play(key, id, auto = false) {
       if (!await waitApprove(st, id, auto)) return false;
       counters.human++; counters.steps++; setStat(); mark(i, 'done'); pulse(st.approve); continue;
     }
-    const from = N[st.f], color = st.f === 'ana' ? '#b69cff' : from.c;
+    const from = N[st.f], color = from.c;
     if (st.f === 'ana' || st.t === 'ana') busy(true);
-    showBubble(st.f, `<span class="who">${from.who}<span class="tag">${st.tag || ''}</span></span>${st.m}`);
+    showBubble(st.f, `<span class="who">${from.who}<span class="tag">${st.tag || ''}</span></span>${st.m}`, { v: st.f === 'ana' ? 'ana' : st.f === 'agency' ? 'sys' : 'person' });
     if (!await sleep(reduced ? 300 : 650, id)) return false;
     if (!await sendPacket(st.f, st.t, color, id) || id !== runId) return false;
     pulse(st.t);
@@ -444,7 +520,7 @@ async function start(keys, auto) {
   for (const k of keys) { if (!await play(k, id, auto)) return; if (keys.length > 1 && !await sleep(900, id)) return; }
   document.body.classList.remove('running');
   const last = keys[keys.length - 1];
-  renderStory(last, `<p style="margin-top:12px;color:var(--text)">Done. Tap another persona, or replay this one.</p>`);
+  renderStory(last, `<p style="margin-top:12px;color:var(--ink)">Done. Tap another persona, or replay this one.</p>`);
 }
 function pick(id) {
   if (S[id]) { counters = { steps:0, ana:0, human:0 }; setStat(); start([id], false); }
@@ -455,7 +531,7 @@ $('#speed').onclick = e => { speed = speed === 1 ? 2 : 1; e.currentTarget.setAtt
 $('#stop').onclick = () => { cancel(); counters = { steps:0, ana:0, human:0 }; setStat(); document.body.classList.remove('started');
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', 'false')); Object.values(N).forEach(n => n.g.classList.remove('active'));
   stepsEl.innerHTML = '<li class="empty" style="opacity:1;display:block">Steps will appear here as the simulation runs.</li>'; initStory(); };
-function initStory() { $('#story').style.setProperty('--c', '#9bb6ff'); $('#story').innerHTML = `<div class="eyebrow">Live network</div><h2>Who talks to whom?</h2><p>Click a persona to trigger a chain of events across the network. Click <b style="color:var(--text)">Ana</b> to see what she does.</p>`; }
+function initStory() { $('#story').innerHTML = `<div class="eyebrow">Live network</div><h2>Who talks to whom?</h2><p>Click a persona to trigger a chain of events across the network. Click <b style="color:var(--ink)">Ana</b> to see what she does.</p>`; }
 initStory();
 
 /* ---------- ambient life: faint packets on idle ---------- */
