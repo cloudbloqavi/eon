@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eon · How everyone connects through Ana</title>
+<meta name="description" content="An interactive, animated simulation of how tenants, home owners, agencies and investors connect through Ana, Eon's AI copilot.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#03040a; --panel:#0a0d17; --panel2:#0f1320; --line:#1a2033; --line2:#262e47;
+  --text:#e9ecf6; --muted:#8c94ad; --dim:#5b637c;
+  --blue:#2567e7; --blue-d:#014bdb;
+  --tenant:#5cc8ff; --owner:#ffb454; --agency:#6ea0ff; --investor:#3ddc97;
+  --ana1:#7fb0ff; --ana2:#b69cff; --warn:#ffb454; --ok:#3ddc97;
+  --head:"Instrument Sans","Inter",system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{color-scheme:dark}
+body{background:var(--bg);color:var(--text);font:400 14px/1.5 var(--body);min-height:100vh;
+  background-image:radial-gradient(900px 500px at 12% -10%,rgba(37,103,231,.18),transparent 60%),radial-gradient(800px 500px at 100% 110%,rgba(182,156,255,.10),transparent 60%);
+  -webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--ana1);outline-offset:3px;border-radius:8px}
+
+.wrap{max-width:1320px;margin:0 auto;padding:28px 24px 40px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:10px;font:600 20px var(--head);letter-spacing:-.01em}
+.brand i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--blue-d),var(--ana2));display:block;box-shadow:0 0 24px rgba(37,103,231,.55)}
+.brand span{color:var(--muted);font:400 13px var(--body);margin-left:6px;padding-left:12px;border-left:1px solid var(--line2)}
+.cta{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#05070d;border-radius:999px;padding:9px 18px;font-weight:600;text-decoration:none;font-size:13px}
+.cta:hover{background:#dfe7ff}
+
+h1{font:600 clamp(28px,3.6vw,44px)/1.08 var(--head);letter-spacing:-.025em;max-width:30ch}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--ana1),var(--ana2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{color:var(--muted);max-width:60ch;margin-top:14px;font-size:15px}
+
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 14px;align-items:center}
+.tab{display:inline-flex;align-items:center;gap:9px;padding:9px 16px 9px 12px;border-radius:999px;border:1px solid var(--line2);background:var(--panel);font-weight:500;transition:.2s}
+.tab b{font-weight:400;color:var(--muted)}
+.tab i{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.tab:hover{border-color:var(--c);transform:translateY(-1px)}
+.tab[aria-pressed=true]{background:color-mix(in srgb,var(--c) 14%,var(--panel));border-color:var(--c)}
+.tab .soon{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--warn);border:1px solid rgba(255,180,84,.4);border-radius:999px;padding:1px 7px}
+.sp{flex:1}
+.ctl{display:inline-flex;gap:6px;align-items:center}
+.btn{border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:8px 14px;font-weight:500;font-size:13px;transition:.2s}
+.btn:hover{border-color:var(--ana1)}
+.btn.primary{background:linear-gradient(135deg,var(--blue-d),#5a4de0);border-color:transparent}
+.btn.primary:hover{filter:brightness(1.15)}
+.btn[aria-pressed=true]{border-color:var(--ana1);color:var(--ana1)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:18px;align-items:start}
+@media(max-width:1020px){.grid{grid-template-columns:1fr}}
+
+.stagebox{position:relative;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,#070a14,#04050b);overflow:hidden;aspect-ratio:1000/640;width:100%}
+.stagebox::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:40px 40px;opacity:.28;mask-image:radial-gradient(circle at 50% 50%,#000 20%,transparent 75%)}
+svg.stage{position:absolute;inset:0;width:100%;height:100%}
+.overlay{position:absolute;inset:0;pointer-events:none}
+
+/* edges */
+.edge{fill:none;stroke:#222a43;stroke-width:1.5;transition:stroke .3s,stroke-width .3s}
+.edge.preview{stroke-dasharray:3 6}
+.edge.live{stroke:var(--c,#6ea0ff);stroke-width:2.4;filter:drop-shadow(0 0 6px var(--c,#6ea0ff))}
+
+/* nodes */
+.node{cursor:pointer;outline:none}
+.node .disc{fill:#0a0e1b;stroke:var(--c);stroke-width:1.6;transition:.25s}
+.node .halo{fill:var(--c);opacity:.08;transition:.3s}
+.node:hover .halo,.node:focus-visible .halo,.node.active .halo{opacity:.2}
+.node:hover .disc,.node:focus-visible .disc,.node.active .disc{stroke-width:2.8;fill:#0d1224}
+.node .ico{fill:none;stroke:var(--c);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.node text{fill:var(--text);font:600 15px var(--head);text-anchor:middle}
+.node text.eyebrow{fill:var(--muted);font:500 10px var(--body);letter-spacing:.14em;text-transform:uppercase}
+.node text.sub{fill:var(--dim);font:400 11px var(--body)}
+.node.small text{font-size:12.5px}
+.node .ping{fill:none;stroke:var(--c);stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center}
+.node.pulse .ping{animation:ping .8s ease-out}
+@keyframes ping{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
+.node.waiting .disc{stroke:var(--warn);stroke-width:3;animation:wait 1s ease-in-out infinite}
+@keyframes wait{50%{stroke-opacity:.35}}
+.hint-ring{fill:none;stroke:var(--c);stroke-width:1.5;stroke-dasharray:2 7;opacity:.7;animation:spin 18s linear infinite;transform-box:fill-box;transform-origin:center}
+body.running .hint-ring{opacity:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ana-orbit{fill:none;stroke:url(#anaGrad);stroke-width:2;stroke-dasharray:40 90;transform-box:fill-box;transform-origin:center;animation:spin 9s linear infinite}
+.ana.busy .ana-orbit{animation-duration:1.6s;stroke-width:3.5}
+.ana-core{fill:url(#anaCore)}
+.ana .ico{stroke:#fff}
+
+/* bubbles */
+.bubble{position:absolute;max-width:min(240px,46%);background:rgba(12,16,30,.94);border:1px solid var(--c,var(--line2));border-radius:14px;padding:8px 11px 9px;font-size:12.5px;line-height:1.4;box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 22px color-mix(in srgb,var(--c,#6ea0ff) 25%,transparent);
+  opacity:0;transform:translateY(6px) scale(.97);transition:.3s;pointer-events:auto;backdrop-filter:blur(6px);z-index:3}
+.bubble.in{opacity:1;transform:none}
+.bubble .who{display:block;font:600 10px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--c);margin-bottom:2px}
+.bubble .tag{color:var(--dim);font-weight:400;letter-spacing:.04em;text-transform:none;margin-left:5px}
+.bubble.approve{--c:var(--warn);border-width:1.5px}
+.bubble button{margin-top:8px;display:block;width:100%;background:var(--warn);color:#1a1100;border:0;border-radius:9px;padding:6px 10px;font-weight:600;font-size:12px}
+.bubble button:hover{filter:brightness(1.1)}
+.bubble .auto{display:block;margin-top:5px;font-size:10.5px;color:var(--dim)}
+
+.legend{position:absolute;left:14px;bottom:12px;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--dim);z-index:2}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:8px;height:8px;border-radius:50%;display:block}
+.pill{position:absolute;right:14px;top:12px;z-index:2;font-size:11px;color:var(--muted);border:1px solid var(--line2);border-radius:999px;padding:4px 11px;background:rgba(7,10,20,.7)}
+.pill b{color:var(--ana1);font-weight:500}
+.cue{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-size:12px;color:var(--muted);z-index:2;transition:opacity .4s;white-space:nowrap}
+body.running .cue,body.started .cue{opacity:0}
+
+/* side panel */
+.side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
+.eyebrow{font:500 10.5px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--c,var(--muted))}
+.card h2{font:600 22px/1.15 var(--head);letter-spacing:-.015em;margin:6px 0 6px}
+.card p{color:var(--muted);font-size:13px}
+.badge{display:inline-block;margin-top:10px;font-size:11px;color:var(--warn);border:1px solid rgba(255,180,84,.4);border-radius:999px;padding:2px 10px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font:600 24px var(--head);letter-spacing:-.02em}
+.stat span{font-size:11px;color:var(--muted);line-height:1.3;display:block}
+.steps{list-style:none;padding:0;display:flex;flex-direction:column;gap:2px;max-height:360px;overflow:auto;scroll-behavior:smooth;margin:0 -6px;padding:0 6px}
+.steps li{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:8px 8px;border-radius:12px;opacity:.38;transition:.3s;font-size:13px}
+.steps li .n{width:22px;height:22px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-size:10.5px;color:var(--muted);margin-top:1px}
+.steps li .route{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:1px}
+.steps li.active{opacity:1;background:var(--panel2);box-shadow:inset 0 0 0 1px var(--line2)}
+.steps li.active .n{border-color:var(--ana1);color:var(--ana1)}
+.steps li.done{opacity:.85}
+.steps li.done .n{background:var(--ok);border-color:var(--ok);color:#03150c}
+.steps li.human .n{border-color:var(--warn);color:var(--warn)}
+.steps li.human.done .n{background:var(--warn);color:#1a1100}
+.steps li .ana-tag{color:var(--ana1)}
+.empty{color:var(--dim);font-size:13px;padding:6px 2px}
+.fine{font-size:11.5px;color:var(--dim);line-height:1.5}
+.fine a{color:var(--muted)}
+.info dl{display:grid;gap:8px;margin-top:10px}
+.info dt{font-weight:600;font-size:13px}
+.info dd{color:var(--muted);font-size:12.5px}
+
+@media(max-width:700px){
+  .wrap{padding:18px 14px 32px}
+  .legend,.cue,.pill{display:none}
+  .node text{font-size:25px}.node.small text{font-size:22px}
+  .node text.eyebrow{font-size:15px}.node text.sub{font-size:17px}
+  .bubble{font-size:11.5px;padding:6px 9px;max-width:58%}
+  .brand span{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .hint-ring,.ana-orbit,.node.waiting .disc{animation:none}
+  .node.pulse .ping{animation:none}
+  *{transition-duration:.01s!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><i></i>eon<span>Persona flow simulator</span></div>
+    <a class="cta" href="https://eonai.solutions/#demo">Book a demo →</a>
+  </header>
+
+  <h1>One agency. Four people. <em>Ana</em> in the middle.</h1>
+  <p class="lede">Every message, repair, payment and deadline in a rental moves between the same few people. Pick one and watch the chain reaction: Ana answers, Eon records, and a person approves anything that involves money.</p>
+
+  <div class="tabs" id="tabs" role="group" aria-label="Choose a persona to simulate"></div>
+
+  <div class="grid">
+    <div class="stagebox" id="stagebox">
+      <div class="cue">Click any node to start its story</div>
+      <div class="pill">Scripted demo · sample data</div>
+      <svg class="stage" id="stage" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet" aria-label="Network graph of tenants, home owners, agencies, investors, vendors and authorities connected through Ana, the AI agent"></svg>
+      <div class="overlay" id="overlay"></div>
+      <div class="legend">
+        <span><i style="background:var(--ana1)"></i>Ana (AI) at work</span>
+        <span><i style="background:var(--warn)"></i>Needs a person</span>
+        <span><i style="background:var(--ok)"></i>Recorded in Eon</span>
+      </div>
+    </div>
+
+    <aside class="side" aria-live="polite">
+      <section class="card" id="story"></section>
+      <div class="stats">
+        <div class="stat"><b id="s-steps">0</b><span>steps run</span></div>
+        <div class="stat"><b id="s-ana">0</b><span>handled by Ana</span></div>
+        <div class="stat"><b id="s-human">0</b><span>approved by a person</span></div>
+      </div>
+      <section class="card"><ol class="steps" id="steps"><li class="empty" style="opacity:1;display:block">Steps will appear here as the simulation runs.</li></ol></section>
+      <p class="fine">Flows follow what <a href="https://eonai.solutions/en">eonai.solutions</a> describes: Ana on WhatsApp, repairs and vendors, deposit deadlines, owner statements. The investor flow reflects the “Sales department” listed as <em>coming soon</em>. Money, leases and prices always go through a person.</p>
+    </aside>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const NS = 'http://www.w3.org/2000/svg';
+const $ = (s, r = document) => r.querySelector(s);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; };
+
+/* ---------- graph model ---------- */
+const ICONS = {
+  user: 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c0-4 3.6-7 8-7s8 3 8 7',
+  owner: 'M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6',
+  agency: 'M4 21V5l8-2v18M12 9h8v12M4 21h16M7 9h2M7 13h2M7 17h2M15 13h2M15 17h2',
+  investor: 'M3 17l6-6 4 4 8-9M15 6h6v6',
+  ana: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z',
+  vendor: 'M15 5a4 4 0 00-4 5l-7 7 3 3 7-7a4 4 0 005-4l-3 2-2-2 2-3z',
+  authority: 'M3 9l9-5 9 5M5 9v9M9 9v9M15 9v9M19 9v9M3 21h18'
+};
+const N = {
+  tenant:   { x:150, y:132, r:42, c:'#5cc8ff', eyebrow:'For', name:'Tenants',     who:'Marc',       icon:'user',     persona:true, bubble:'below' },
+  owner:    { x:850, y:132, r:42, c:'#ffb454', eyebrow:'For', name:'Home owners', who:'Montserrat', icon:'owner',    persona:true, bubble:'below' },
+  agency:   { x:150, y:492, r:42, c:'#6ea0ff', eyebrow:'For', name:'Agencies',    who:'Carlos',     icon:'agency',   persona:true, bubble:'above' },
+  investor: { x:850, y:492, r:42, c:'#3ddc97', eyebrow:'',    name:'Investors',   who:'Investor',   icon:'investor', persona:true, bubble:'above' },
+  ana:      { x:500, y:312, r:58, c:'#9bb6ff', name:'Ana', sub:'AI copilot · WhatsApp', who:'Ana', icon:'ana', bubble:'side' },
+  vendor:   { x:500, y:70,  r:28, c:'#9aa4c4', name:'Vendors', sub:'Puig Plumbing', who:'Puig Plumbing', icon:'vendor', small:true, bubble:'below' },
+  authority:{ x:500, y:568, r:28, c:'#9aa4c4', name:'Authorities', sub:'INCASÒL · ATC', who:'INCASÒL', icon:'authority', small:true, bubble:'above' }
+};
+const E = [
+  ['tenant','ana',0],['owner','ana',0],['agency','ana',0],['investor','ana',0,1],['vendor','ana',0],['authority','ana',0],
+  ['tenant','agency',0],['agency','authority',0.06],['agency','investor',0,1]
+].map(([a,b,bend,preview]) => ({a,b,bend,preview:!!preview,key:[a,b].sort().join('|')}));
+const edgeFor = (a,b) => E.find(e => e.key === [a,b].sort().join('|'));
+
+/* ---------- stories ---------- */
+// m: what is said / happens (shown in bubble). note: what to read in the step list.
+// kind 'approve' = a person decides. tag = channel label.
+const S = {
+  tenant: { label:'Tenants', who:'Marc · Verdi 100, 3º B', title:'A leak at 10pm',
+    blurb:'Marc writes on the agency’s WhatsApp line. No one is on call, and Ana is.',
+    steps:[
+      { f:'tenant', t:'ana', m:'Hi, the pipe under the sink is leaking 😩', tag:'WhatsApp', note:'Marc reports a leak on the agency’s WhatsApp line.' },
+      { f:'ana', t:'tenant', m:'Sorry, Marc. Close the stopcock under the sink. Could you send a photo?', tag:'WhatsApp', note:'Ana gives first aid right away and asks for a photo.' },
+      { f:'tenant', t:'ana', m:'📷 photo of the sink', tag:'WhatsApp', note:'Photo arrives and attaches to the ticket.' },
+      { f:'ana', t:'agency', m:'Repair opened · Verdi 100, 3º B · urgent. Puig Plumbing suggested.', tag:'Eon', rec:true, note:'Ana opens an urgent repair in Eon and suggests Puig Plumbing.' },
+      { approve:'agency', m:'Send Puig Plumbing', note:'Carlos approves the vendor in one tap.' },
+      { f:'ana', t:'vendor', m:'Leak at Verdi 100, 3º B. Thursday 10:00?', tag:'WhatsApp', note:'Ana books the vendor.' },
+      { f:'vendor', t:'ana', m:'Confirmed, Thursday 10:00.', tag:'WhatsApp', note:'Puig Plumbing confirms the slot.' },
+      { f:'ana', t:'tenant', m:'Plumber comes Thursday at 10:00. I’ll let you know if it changes.', tag:'WhatsApp', note:'Marc gets the appointment on WhatsApp.' },
+      { f:'ana', t:'owner', m:'Repair at Verdi 100. The invoice will land on your statement.', tag:'Owner portal', rec:true, note:'The invoice is queued for the owner’s statement.' }
+    ]},
+  owner: { label:'Home owners', who:'Montserrat Ferrer', title:'“What are you transferring this month?”',
+    blurb:'Owners call to ask what came in. Ana already knows, without anyone digging.',
+    steps:[
+      { f:'owner', t:'ana', m:'How much are you transferring this month?', tag:'WhatsApp', note:'Montserrat asks about October on WhatsApp.' },
+      { f:'ana', t:'agency', m:'Looking up October rent, deductions and repairs…', tag:'Eon', note:'Ana reads the rent, deposit and repair records already in Eon.' },
+      { f:'agency', t:'ana', m:'Statement ready · October · €3,125.30', tag:'Eon', rec:true, note:'Eon returns the October statement, repair invoice included.' },
+      { approve:'agency', m:'Release statement', note:'Carlos checks the figures. Money goes through a person.' },
+      { f:'ana', t:'owner', m:'October: €3,125.30. Statement attached.', tag:'Owner portal', rec:true, note:'Ana replies with the figure and the PDF statement.' },
+      { f:'owner', t:'ana', m:'And what happened with the boiler?', tag:'WhatsApp', note:'Follow-up question, the one that usually becomes a phone call.' },
+      { f:'ana', t:'owner', m:'Puig Plumbing fixed it Thursday. Invoice is on the statement.', tag:'WhatsApp', note:'Ana answers from the repair history.' }
+    ]},
+  agency: { label:'Agencies', who:'Carlos · Monday 08:30', title:'Morning, with the deadlines watched',
+    blurb:'Ana and Eon work the day’s admin; the agency decides what matters.',
+    steps:[
+      { f:'ana', t:'agency', m:'Good morning, Carlos. Modelo 600 in 3 days · Deposit Oriol Casas in 10.', tag:'Morning alert', rec:true, note:'Eon’s morning alert: deadlines worked out from each lease.' },
+      { f:'ana', t:'agency', m:'Sara Molina: €1,900, 6 days late. Send her a reminder?', tag:'Eon', note:'Ana flags the one tenant who hasn’t paid.' },
+      { approve:'agency', m:'Send reminder', note:'Carlos approves the reminder.' },
+      { f:'ana', t:'tenant', m:'Hi Sara, a friendly reminder: October rent is outstanding (€1,900).', tag:'WhatsApp', note:'Reminder goes out on WhatsApp.' },
+      { f:'tenant', t:'ana', m:'Can I pay on the 5th?', tag:'WhatsApp', note:'Sara asks for a new date.' },
+      { approve:'agency', m:'Agree to the 5th', note:'Payment terms are a human call.' },
+      { f:'ana', t:'tenant', m:'Agreed: the 5th. I’ll remind you the day before.', tag:'WhatsApp', note:'Ana confirms and schedules the follow-up.' },
+      { f:'agency', t:'authority', m:'Deposit lodged · Oriol Casas · INCASÒL', tag:'Filing', rec:true, note:'The deposit is lodged before the deadline, no surcharge.' }
+    ]},
+  investor: { label:'Investors', who:'Via a personal investor link', title:'A deal built on real rents',
+    blurb:'Preview of the Sales department: investor links using the actual rents in the portfolio.', preview:true,
+    steps:[
+      { f:'investor', t:'ana', m:'Opens an investor link: Verdi 100, 3º B', tag:'Investor link', note:'The investor opens a link the agency sent.' },
+      { f:'ana', t:'agency', m:'Pull real rents and costs for comparable flats.', tag:'Eon', note:'Ana pulls real rents from the agency’s own portfolio.' },
+      { f:'agency', t:'ana', m:'Rents, costs and tenancy history ready.', tag:'Eon', rec:true, note:'Eon returns portfolio data, not market guesses.' },
+      { f:'ana', t:'investor', m:'Purchase costs · gross yield · mortgage scenarios.', tag:'Investor link', note:'The investor sees purchase costs, yield and mortgage.' },
+      { f:'investor', t:'ana', m:'Interesting. Can we view it this week?', tag:'Investor link', note:'The investor asks for a viewing.' },
+      { f:'ana', t:'agency', m:'New lead: viewing request · Verdi 100, 3º B.', tag:'Eon', rec:true, note:'A qualified lead lands in the agency’s pipeline.' },
+      { approve:'agency', m:'Book viewing', note:'Carlos confirms the slot.' },
+      { f:'ana', t:'investor', m:'Viewing booked: Thursday 17:00.', tag:'Investor link', note:'The investor gets the confirmation.' }
+    ]}
+};
+const ORDER = ['agency','tenant','owner','investor'];
+
+const INFO = {
+  ana: { eyebrow:'The AI agent', title:'Ana', body:'Ana answers on the agency’s own WhatsApp number, chases rent, coordinates repairs and works in Eon. She handles the repetitive part and hands every decision involving money, leases or prices to a person.',
+    items:[['Tenants','Answers at any hour: breakdowns, reminders, appointments, lease questions.'],['Owners','Statements and “where is my rent” questions, from the record.'],['Agency','Opens tickets, books vendors, flags deadlines. You can step into any chat.'],['Next','Whole processes end to end (repairs, arrears, renewals) within limits you set.']] },
+  vendor: { eyebrow:'Vendors', title:'Plumbers, electricians, locksmiths', body:'Ana coordinates the booking by WhatsApp. The invoice lands on the owner’s statement automatically.', items:[] },
+  authority: { eyebrow:'Authorities', title:'Deposit and tax deadlines', body:'Eon works out each region’s official deadline the day the lease is signed (INCASÒL, ATC, Modelo 600, SERPAVI) and warns 10 days, 3 days and on the day.', items:[] }
+};
+
+/* ---------- build stage ---------- */
+const svg = $('#stage'), overlay = $('#overlay'), stagebox = $('#stagebox');
+const defs = el('defs', {}, svg);
+const g1 = el('linearGradient', { id:'anaGrad', x1:0, y1:0, x2:1, y2:1 }, defs);
+el('stop', { offset:0, 'stop-color':'#7fb0ff' }, g1); el('stop', { offset:1, 'stop-color':'#b69cff' }, g1);
+const g2 = el('radialGradient', { id:'anaCore', cx:.35, cy:.3, r:.9 }, defs);
+el('stop', { offset:0, 'stop-color':'#4a6fe0' }, g2); el('stop', { offset:1, 'stop-color':'#2a1f78' }, g2);
+const bg = el('circle', { cx:500, cy:312, r:250, fill:'url(#anaGrad)', opacity:.05 }, svg);
+
+const edgeG = el('g', {}, svg), pktG = el('g', {}, svg), nodeG = el('g', {}, svg);
+function ctrl(e) { const A = N[e.a], B = N[e.b], mx = (A.x+B.x)/2, my = (A.y+B.y)/2, dx = B.x-A.x, dy = B.y-A.y; return { x: mx - dy*e.bend, y: my + dx*e.bend }; }
+function pt(e, from, t) { const A = N[e.a], B = N[e.b], C = ctrl(e); const u = from === e.a ? t : 1 - t, v = 1 - u;
+  return { x: v*v*A.x + 2*v*u*C.x + u*u*B.x, y: v*v*A.y + 2*v*u*C.y + u*u*B.y }; }
+E.forEach(e => { const A = N[e.a], B = N[e.b], C = ctrl(e);
+  e.el = el('path', { class:'edge' + (e.preview ? ' preview' : ''), d:`M${A.x} ${A.y} Q${C.x} ${C.y} ${B.x} ${B.y}` }, edgeG); });
+
+Object.entries(N).forEach(([id, n]) => {
+  const g = el('g', { class:`node ${id === 'ana' ? 'ana ' : ''}${n.small ? 'small' : ''}`, tabindex:0, role:'button',
+    'aria-label': n.persona ? `Run the ${n.name} story` : `About ${n.name}`, style:`--c:${n.c}`, 'data-id':id }, nodeG);
+  n.g = g;
+  el('circle', { class:'halo', cx:n.x, cy:n.y, r:n.r+16 }, g);
+  if (n.persona) el('circle', { class:'hint-ring', cx:n.x, cy:n.y, r:n.r+10 }, g);
+  if (id === 'ana') { el('circle', { class:'ana-orbit', cx:n.x, cy:n.y, r:n.r+9 }, g); el('circle', { class:'disc ana-core', cx:n.x, cy:n.y, r:n.r }, g); g.querySelector('.disc').style.stroke = '#9bb6ff'; }
+  else el('circle', { class:'disc', cx:n.x, cy:n.y, r:n.r }, g);
+  el('circle', { class:'ping', cx:n.x, cy:n.y, r:n.r }, g);
+  const s = n.r / 24 * (id === 'ana' ? .62 : .78);
+  const ig = el('g', { transform:`translate(${n.x-12*s} ${n.y-12*s}) scale(${s})` }, g);
+  el('path', { class:'ico', d:ICONS[n.icon], 'vector-effect':'non-scaling-stroke' }, ig);
+  const ty = n.y + n.r + (n.small ? 20 : 26);
+  if (n.eyebrow) { const t = el('text', { class:'eyebrow', x:n.x, y:ty-16 }, g); t.textContent = n.eyebrow; }
+  const t = el('text', { x:n.x, y: n.eyebrow ? ty+2 : ty-(n.persona ? 0 : 0) }, g); t.textContent = n.name;
+  if (n.sub) { const t2 = el('text', { class:'sub', x:n.x, y:ty+17 }, g); t2.textContent = n.sub; }
+  g.addEventListener('click', () => pick(id));
+  g.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pick(id); } });
+});
+// investor has no eyebrow: keep label alignment consistent with the others
+N.investor.g.querySelector('text:not(.eyebrow)').setAttribute('y', N.investor.y + N.investor.r + 28);
+
+/* ---------- tabs ---------- */
+const tabs = $('#tabs');
+const mkTab = k => { const s = S[k], b = document.createElement('button'); b.className = 'tab'; b.style.setProperty('--c', N[k].c); b.setAttribute('aria-pressed', 'false'); b.dataset.k = k;
+  b.innerHTML = `<i></i>${k === 'investor' ? '' : 'For '}<b>${s.label}</b>${s.preview ? '<span class="soon">preview</span>' : ''}`; b.onclick = () => pick(k); tabs.appendChild(b); };
+['tenant','owner','agency','investor'].forEach(mkTab);
+tabs.insertAdjacentHTML('beforeend', '<span class="sp"></span><span class="ctl"><button class="btn primary" id="full">▶ Run a full day</button><button class="btn" id="speed" aria-pressed="false" title="Toggle speed">2× speed</button><button class="btn" id="stop">Reset</button></span>');
+
+/* ---------- engine ---------- */
+let runId = 0, speed = 1, flying = new Set(), bubbles = new Map(), counters = { steps:0, ana:0, human:0 };
+const sleep = (ms, id) => new Promise(r => setTimeout(r, ms / speed)).then(() => id === runId);
+const setStat = () => { $('#s-steps').textContent = counters.steps; $('#s-ana').textContent = counters.ana; $('#s-human').textContent = counters.human; };
+
+function clearBubbles() { bubbles.forEach(b => b.remove()); bubbles.clear(); }
+function showBubble(id, html, opts = {}) {
+  const n = N[id]; bubbles.get(id)?.remove();
+  const b = document.createElement('div'); b.className = 'bubble' + (opts.approve ? ' approve' : ''); b.style.setProperty('--c', n.c); b.innerHTML = html; overlay.appendChild(b); bubbles.set(id, b);
+  const W = stagebox.clientWidth, H = stagebox.clientHeight, k = W / 1000, bw = b.offsetWidth, bh = b.offsetHeight;
+  let x = n.x * k, y = n.y * k, left = x - bw/2, top;
+  const gap = (n.r + (n.small ? 22 : 46)) * k;
+  if (n.bubble === 'below') top = y + gap + 6; else if (n.bubble === 'above') top = y - gap - bh - 6; else { top = y + (n.r + 36) * k; }
+  left = Math.max(8, Math.min(W - bw - 8, left)); top = Math.max(8, Math.min(H - bh - 8, top));
+  b.style.left = left + 'px'; b.style.top = top + 'px';
+  requestAnimationFrame(() => b.classList.add('in'));
+  return b;
+}
+const fadeBubble = id => { const b = bubbles.get(id); if (b) { b.classList.remove('in'); setTimeout(() => b.remove(), 300); bubbles.delete(id); } };
+
+function pulse(id) { const g = N[id].g; g.classList.remove('pulse'); void g.getBoundingClientRect(); g.classList.add('pulse'); setTimeout(() => g.classList.remove('pulse'), 850); }
+const busy = on => N.ana.g.classList.toggle('busy', on);
+
+function sendPacket(f, t, color, id) {
+  const e = edgeFor(f, t); if (!e) return Promise.resolve(true);
+  e.el.style.setProperty('--c', color); e.el.classList.add('live');
+  const dur = (reduced ? 500 : 1050) / speed, g = el('g', {}, pktG);
+  const trail = [0, 1, 2, 3].map(i => el('circle', { r: 6 - i*1.2, fill: color, opacity: .75 - i*.18 }, g));
+  const head = el('circle', { r:6.5, fill:'#fff' }, g); g.appendChild(head);
+  const rec = { g, cancelled:false }; flying.add(rec);
+  return new Promise(res => {
+    const t0 = performance.now();
+    const ease = x => x < .5 ? 2*x*x : 1 - Math.pow(-2*x + 2, 2)/2;
+    (function frame(now) {
+      if (rec.cancelled) return res(false);
+      const p = Math.min(1, (now - t0) / dur);
+      trail.forEach((c, i) => { const q = pt(e, f, ease(Math.max(0, p - i*.035))); c.setAttribute('cx', q.x); c.setAttribute('cy', q.y); });
+      const q = pt(e, f, ease(p)); head.setAttribute('cx', q.x); head.setAttribute('cy', q.y);
+      if (p < 1) requestAnimationFrame(frame);
+      else { g.remove(); flying.delete(rec); e.el.classList.remove('live'); res(true); }
+    })(t0);
+  });
+}
+function killPackets() { flying.forEach(r => { r.cancelled = true; r.g.remove(); }); flying.clear(); E.forEach(e => e.el.classList.remove('live')); }
+
+/* step list */
+const stepsEl = $('#steps');
+function buildList(key) {
+  stepsEl.innerHTML = '';
+  S[key].steps.forEach((s, i) => {
+    const li = document.createElement('li'); if (s.approve) li.className = 'human';
+    const route = s.approve ? 'Needs a person · ' + N[s.approve].who : `${N[s.f].who} → ${N[s.t].who}${s.tag ? ' · ' + s.tag : ''}`;
+    li.innerHTML = `<span class="n">${i+1}</span><span><span class="route">${s.f === 'ana' || s.t === 'ana' ? '<span class="ana-tag">✦</span> ' : ''}${route}</span>${s.note}</span>`;
+    stepsEl.appendChild(li);
+  });
+}
+const mark = (i, cls) => { const li = stepsEl.children[i]; if (!li) return; li.classList.remove('active'); li.classList.add(cls); if (cls === 'active') li.scrollIntoView({ block:'nearest' }); };
+
+function renderStory(key, extra = '') {
+  const s = S[key], c = N[key].c;
+  $('#story').style.setProperty('--c', c);
+  $('#story').innerHTML = `<div class="eyebrow">${key === 'investor' ? '' : 'For '}${s.label} · ${s.who}</div><h2>${s.title}</h2><p>${s.blurb}</p>${s.preview ? '<span class="badge">Preview · Sales department is coming soon</span>' : ''}${extra}`;
+}
+function renderInfo(id) {
+  const i = INFO[id], n = N[id];
+  $('#story').style.setProperty('--c', n.c);
+  $('#story').innerHTML = `<div class="info"><div class="eyebrow">${i.eyebrow}</div><h2>${i.title}</h2><p>${i.body}</p>${i.items.length ? '<dl>' + i.items.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join('') + '</dl>' : ''}</div>`;
+}
+
+async function waitApprove(step, id, auto) {
+  const n = N[step.approve]; n.g.classList.add('waiting');
+  const wait = auto ? 1700 : 9000;
+  const b = showBubble(step.approve, `<span class="who">${n.who} · your call</span>Ana needs a decision<button type="button">${step.m}</button><span class="auto">${auto ? '' : 'Auto-continues in the demo after a few seconds'}</span>`, { approve:true });
+  const btn = b.querySelector('button');
+  const ok = await new Promise(res => { let done = false; const fin = v => { if (!done) { done = true; res(v); } };
+    btn.onclick = () => fin(true); sleep(wait, id).then(v => fin(v)); });
+  n.g.classList.remove('waiting'); fadeBubble(step.approve);
+  return ok;
+}
+
+async function play(key, id, auto = false) {
+  const s = S[key]; buildList(key); renderStory(key);
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', String(t.dataset.k === key)));
+  Object.entries(N).forEach(([k, n]) => n.g.classList.toggle('active', k === key));
+  if (!await sleep(350, id)) return false;
+  for (let i = 0; i < s.steps.length; i++) {
+    const st = s.steps[i]; mark(i, 'active');
+    if (st.approve) {
+      if (!await waitApprove(st, id, auto)) return false;
+      counters.human++; counters.steps++; setStat(); mark(i, 'done'); pulse(st.approve); continue;
+    }
+    const from = N[st.f], color = st.f === 'ana' ? '#b69cff' : from.c;
+    if (st.f === 'ana' || st.t === 'ana') busy(true);
+    showBubble(st.f, `<span class="who">${from.who}<span class="tag">${st.tag || ''}</span></span>${st.m}`);
+    if (!await sleep(reduced ? 300 : 650, id)) return false;
+    if (!await sendPacket(st.f, st.t, color, id) || id !== runId) return false;
+    pulse(st.t);
+    counters.steps++; if (st.f === 'ana' || st.t === 'ana') counters.ana++; setStat();
+    mark(i, 'done');
+    if (!await sleep(reduced ? 500 : 1000, id)) return false;
+    fadeBubble(st.f);
+    if (i === s.steps.length - 1 || (S[key].steps[i+1] && !(S[key].steps[i+1].f === 'ana' || S[key].steps[i+1].t === 'ana'))) busy(false);
+  }
+  busy(false);
+  await sleep(500, id); clearBubbles();
+  return id === runId;
+}
+
+function cancel() { runId++; killPackets(); clearBubbles(); busy(false); Object.values(N).forEach(n => n.g.classList.remove('waiting', 'pulse')); document.body.classList.remove('running'); }
+async function start(keys, auto) {
+  cancel(); const id = runId; document.body.classList.add('running', 'started');
+  for (const k of keys) { if (!await play(k, id, auto)) return; if (keys.length > 1 && !await sleep(900, id)) return; }
+  document.body.classList.remove('running');
+  const last = keys[keys.length - 1];
+  renderStory(last, `<p style="margin-top:12px;color:var(--text)">Done. Tap another persona, or replay this one.</p>`);
+}
+function pick(id) {
+  if (S[id]) { counters = { steps:0, ana:0, human:0 }; setStat(); start([id], false); }
+  else { cancel(); document.body.classList.add('started'); Object.entries(N).forEach(([k, n]) => n.g.classList.toggle('active', k === id)); document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', 'false')); renderInfo(id); }
+}
+$('#full').onclick = () => { counters = { steps:0, ana:0, human:0 }; setStat(); start(ORDER, true); };
+$('#speed').onclick = e => { speed = speed === 1 ? 2 : 1; e.currentTarget.setAttribute('aria-pressed', String(speed === 2)); };
+$('#stop').onclick = () => { cancel(); counters = { steps:0, ana:0, human:0 }; setStat(); document.body.classList.remove('started');
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', 'false')); Object.values(N).forEach(n => n.g.classList.remove('active'));
+  stepsEl.innerHTML = '<li class="empty" style="opacity:1;display:block">Steps will appear here as the simulation runs.</li>'; initStory(); };
+function initStory() { $('#story').style.setProperty('--c', '#9bb6ff'); $('#story').innerHTML = `<div class="eyebrow">Live network</div><h2>Who talks to whom?</h2><p>Click a persona to trigger a chain of events across the network. Click <b style="color:var(--text)">Ana</b> to see what she does.</p>`; }
+initStory();
+
+/* ---------- ambient life: faint packets on idle ---------- */
+if (!reduced) setInterval(() => {
+  if (document.body.classList.contains('running') || document.hidden) return;
+  const e = E[Math.floor(Math.random() * E.length)], f = Math.random() < .5 ? e.a : e.b, t = f === e.a ? e.b : e.a;
+  const g = el('g', { opacity:.55 }, pktG), c = el('circle', { r:3.2, fill:N[f].c }, g), t0 = performance.now(), d = 1800;
+  (function fr(now) { const p = Math.min(1, (now - t0) / d), q = pt(e, f, p); c.setAttribute('cx', q.x); c.setAttribute('cy', q.y); p < 1 ? requestAnimationFrame(fr) : g.remove(); })(t0);
+}, 1100);
+addEventListener('resize', () => bubbles.forEach(b => b.classList.contains('in') || 0));
+})();
+</script>
+</body>
+</html>
