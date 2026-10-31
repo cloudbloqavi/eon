@@ -38,14 +38,11 @@ a{color:inherit}
 .pillbtn:hover{background:#1a2347}
 
 /* hero */
-.hero{padding:56px 0 30px}
+.hero{padding:32px 0 0}
 .eyebrow{color:var(--blue);font-size:14.5px;font-weight:500}
-h1{font:600 clamp(36px,5vw,58px)/1.02 var(--head);letter-spacing:-.04em;color:var(--navy);max-width:15ch;margin-top:14px}
-h1 em{font-style:normal;color:var(--blue)}
-.lede{color:var(--body);font-size:18px;line-height:1.6;max-width:56ch;margin-top:20px}
 
 /* scenario chips, as the "Ana does the work" tabs */
-.tabs{display:flex;flex-wrap:wrap;gap:10px;margin:34px 0 18px;align-items:stretch}
+.tabs{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px;align-items:stretch}
 .tab{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;padding:10px 18px 11px;border-radius:14px;border:1px solid var(--line);background:#fff;transition:.2s;font-weight:500;font-size:14.5px;color:var(--ink)}
 .tab small{color:var(--blue);font-size:12px;font-weight:600;display:flex;gap:8px;align-items:center}
 .tab small i{width:7px;height:7px;border-radius:50%;background:var(--c)}
@@ -125,6 +122,23 @@ body.running .hint-ring{opacity:0}
 .bubble button:hover{background:#1a2347}
 .bubble .auto{display:block;margin-top:6px;font-size:10.5px;color:var(--muted)}
 
+.transport{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;padding:12px 16px;border-top:1px solid var(--line);background:#fff}
+.tp-btns{display:flex;gap:8px}
+.tp{border:1px solid var(--line2);background:#fff;border-radius:12px;padding:9px 15px;font-weight:600;font-size:13.5px;transition:.2s}
+.tp:hover:not(:disabled){border-color:var(--navy)}
+.tp:disabled{opacity:.35;cursor:not-allowed}
+.tp.main{background:var(--navy);border-color:var(--navy);color:#fff;min-width:96px}
+.tp.main:hover:not(:disabled){background:#1a2347}
+.tp.main.on{background:var(--blue);border-color:var(--blue)}
+.tp-step{color:var(--muted);font-size:13px;flex:1;min-width:120px}
+.tp-step b{color:var(--ink)}
+.speed{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.seg{display:inline-flex;background:var(--band);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(10,16,36,.15)}
+.steps li{cursor:pointer}
+.steps li:hover{background:var(--band)}
+.steps li.pending{}
 .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);padding:12px 18px;border-top:1px solid var(--line);background:#fff}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:8px;height:8px;border-radius:50%;display:block}
@@ -185,8 +199,7 @@ footer{padding:22px 0 30px;color:var(--muted);font-size:13px}
   .container{padding:0 16px}
   .nav .container{height:64px;gap:14px}.nav nav{display:none}.nav .pillbtn{margin-left:auto}
   .logo{font-size:26px}
-  .hero{padding:32px 0 12px}
-  .lede{font-size:16px}
+  .hero{padding:20px 0 0}
   .legend,.cue,.bar em{display:none}
   .node text{font-size:25px}.node.small text{font-size:22px}
   .node text.eyebrow{font-size:17px}.node text.sub{font-size:17px}
@@ -215,9 +228,6 @@ footer{padding:22px 0 30px;color:var(--muted);font-size:13px}
 
 <main class="container">
   <section class="hero">
-    <div class="eyebrow">The network behind every tenancy</div>
-    <h1>One agency. Four people. <em>Ana</em> in the middle.</h1>
-    <p class="lede">Every message, repair, payment and deadline in a rental moves between the same few people. Pick one and watch the chain reaction: Ana answers, Eon keeps the record, and a person approves anything that involves money.</p>
     <div class="tabs" id="tabs" role="group" aria-label="Choose a persona to simulate"></div>
   </section>
 
@@ -228,6 +238,16 @@ footer{padding:22px 0 30px;color:var(--muted);font-size:13px}
         <div class="cue">Click any node to start its story</div>
         <svg class="stage" id="stage" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet" aria-label="Network graph of tenants, home owners, agencies, investors, vendors and authorities connected through Ana, the AI agent"></svg>
         <div class="overlay" id="overlay"></div>
+      </div>
+      <div class="transport" role="group" aria-label="Playback controls">
+        <div class="tp-btns">
+          <button class="tp" id="prev" title="Previous step (←)">← Previous</button>
+          <button class="tp main" id="play">▶ Play</button>
+          <button class="tp" id="next" title="Next step (→)">Next →</button>
+        </div>
+        <div class="tp-step" id="stepLabel" aria-live="polite"></div>
+        <div class="speed"><span>Speed</span><span class="seg" id="speedSeg" role="group" aria-label="Animation speed">
+          <button data-s="0.25" aria-pressed="false">0.25×</button><button data-s="0.5" aria-pressed="true">0.5×</button><button data-s="1" aria-pressed="false">1×</button><button data-s="2" aria-pressed="false">2×</button></span></div>
       </div>
       <div class="legend">
         <span><i style="background:var(--blue)"></i>Ana at work</span>
@@ -404,10 +424,14 @@ const ROLE = { tenant:'Tenant', owner:'Owner', agency:'Agency', investor:'Invest
 const mkTab = k => { const s = S[k], b = document.createElement('button'); b.className = 'tab'; b.style.setProperty('--c', N[k].c); b.setAttribute('aria-pressed', 'false'); b.dataset.k = k;
   b.innerHTML = `<small><i></i>${ROLE[k]}${s.preview ? '<span class="soon">preview</span>' : ''}</small>${s.quote}`; b.onclick = () => pick(k); tabs.appendChild(b); };
 ['tenant','owner','agency','investor'].forEach(mkTab);
-tabs.insertAdjacentHTML('beforeend', '<span class="sp"></span><span class="ctl"><button class="btn primary" id="full">▶ Run a full day</button><button class="btn" id="speed" aria-pressed="false" title="Toggle speed">2× speed</button><button class="btn" id="stop">Reset</button></span>');
+tabs.insertAdjacentHTML('beforeend', '<span class="sp"></span><span class="ctl"><button class="btn primary" id="full">▶ Run a full day</button><button class="btn" id="stop">Reset</button></span>');
 
-/* ---------- engine ---------- */
-let runId = 0, speed = 1, flying = new Set(), bubbles = new Map(), counters = { steps:0, ana:0, human:0 };
+/* ---------- engine ----------
+   One cursor drives everything. `flat` is the ordered list of steps in the
+   session (one story, or all four for "full day"); `g` is how many are done.
+   Play, Prev, Next and clicking a step all just move that cursor. */
+let runId = 0, speed = 0.5, flying = new Set(), bubbles = new Map(), counters = { steps:0, ana:0, human:0 };
+let flat = [], g = 0, shownKey = null, playing = false, inflight = false, chain = false;
 const sleep = (ms, id) => new Promise(r => setTimeout(r, ms / speed)).then(() => id === runId);
 const setStat = () => { const mx = Math.max(counters.steps, 1); $('#p-steps').style.width = counters.steps ? '100%' : '0'; $('#p-ana').style.width = (counters.ana / mx * 100) + '%'; $('#p-human').style.width = (counters.human / mx * 100) + '%'; $('#s-steps').textContent = counters.steps; $('#s-ana').textContent = counters.ana; $('#s-human').textContent = counters.human; };
 
@@ -424,18 +448,19 @@ function showBubble(id, html, opts = {}) {
   requestAnimationFrame(() => b.classList.add('in'));
   return b;
 }
-const fadeBubble = id => { const b = bubbles.get(id); if (b) { b.classList.remove('in'); setTimeout(() => b.remove(), 300); bubbles.delete(id); } };
+const fadeBubbles = () => { bubbles.forEach(b => { b.classList.remove('in'); setTimeout(() => b.remove(), 300); }); bubbles.clear(); };
 
 function pulse(id) { const g = N[id].g; g.classList.remove('pulse'); void g.getBoundingClientRect(); g.classList.add('pulse'); setTimeout(() => g.classList.remove('pulse'), 850); }
 const busy = on => N.ana.g.classList.toggle('busy', on);
+const clearLive = () => E.forEach(e => e.el.classList.remove('live'));
 
-function sendPacket(f, t, color, id) {
+function sendPacket(f, t, color) {
   const e = edgeFor(f, t); if (!e) return Promise.resolve(true);
   e.el.style.setProperty('--c', color); e.el.classList.add('live');
-  const dur = (reduced ? 500 : 1050) / speed, g = el('g', {}, pktG);
-  const trail = [0, 1, 2, 3].map(i => el('circle', { r: 6 - i*1.2, fill: color, opacity: .75 - i*.18 }, g));
-  const head = el('circle', { r:6.5, fill:'#fff' }, g); g.appendChild(head);
-  const rec = { g, cancelled:false }; flying.add(rec);
+  const dur = (reduced ? 500 : 1050) / speed, grp = el('g', {}, pktG);
+  const trail = [0, 1, 2, 3].map(i => el('circle', { r: 6 - i*1.2, fill: color, opacity: .75 - i*.18 }, grp));
+  const head = el('circle', { r:6.5, fill:'#fff' }, grp);
+  const rec = { g: grp, cancelled:false }; flying.add(rec);
   return new Promise(res => {
     const t0 = performance.now();
     const ease = x => x < .5 ? 2*x*x : 1 - Math.pow(-2*x + 2, 2)/2;
@@ -445,11 +470,11 @@ function sendPacket(f, t, color, id) {
       trail.forEach((c, i) => { const q = pt(e, f, ease(Math.max(0, p - i*.035))); c.setAttribute('cx', q.x); c.setAttribute('cy', q.y); });
       const q = pt(e, f, ease(p)); head.setAttribute('cx', q.x); head.setAttribute('cy', q.y);
       if (p < 1) requestAnimationFrame(frame);
-      else { g.remove(); flying.delete(rec); e.el.classList.remove('live'); res(true); }
+      else { grp.remove(); flying.delete(rec); res(true); }
     })(t0);
   });
 }
-function killPackets() { flying.forEach(r => { r.cancelled = true; r.g.remove(); }); flying.clear(); E.forEach(e => e.el.classList.remove('live')); }
+function killPackets() { flying.forEach(r => { r.cancelled = true; r.g.remove(); }); flying.clear(); }
 
 /* step list */
 const stepsEl = $('#steps');
@@ -457,16 +482,18 @@ function buildList(key) {
   stepsEl.innerHTML = '';
   S[key].steps.forEach((s, i) => {
     const li = document.createElement('li'); if (s.approve) li.className = 'human';
+    li.tabIndex = 0; li.title = 'Jump to this step';
     const route = s.approve ? N[s.approve].who + ' decides' : `${N[s.f].who} → ${N[s.t].who}${s.tag ? ' · ' + s.tag : ''}`;
     li.innerHTML = `<span class="n">${i+1}</span><span><span class="route">${s.f === 'ana' || s.t === 'ana' ? '<span class="ana-tag">✦</span> ' : ''}${route}</span>${s.note}${s.approve ? '<span class="chip human">Needs a person</span>' : s.rec ? '<span class="chip rec">Recorded in Eon</span>' : ''}</span>`;
+    const jump = () => { const at = flat.findIndex(x => x.key === shownKey && x.i === i); if (at >= 0) { pause(); cancelRun(); renderState(at + 1); } };
+    li.onclick = jump; li.onkeydown = ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); jump(); } };
     stepsEl.appendChild(li);
   });
 }
-const mark = (i, cls) => { const li = stepsEl.children[i]; if (!li) return; li.classList.remove('active'); li.classList.add(cls); if (cls === 'active') li.scrollIntoView({ block:'nearest' }); };
 
 function renderStory(key, extra = '') {
-  const s = S[key], c = N[key].c;
-  $('#story').style.setProperty('--c', c);
+  const s = S[key];
+  $('#story').style.setProperty('--c', N[key].c);
   $('#story').innerHTML = `<div class="eyebrow">${key === 'investor' ? '' : 'For '}${s.label} · ${s.who}</div><h2>${s.title}</h2><p>${s.blurb}</p>${s.preview ? '<span class="badge">Preview · Sales department is coming soon</span>' : ''}${extra}`;
 }
 function renderInfo(id) {
@@ -474,69 +501,136 @@ function renderInfo(id) {
   $('#story').style.setProperty('--c', n.c);
   $('#story').innerHTML = `<div class="info"><div class="eyebrow">${i.eyebrow}</div><h2>${i.title}</h2><p>${i.body}</p>${i.items.length ? '<dl>' + i.items.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join('') + '</dl>' : ''}</div>`;
 }
-
-async function waitApprove(step, id, auto) {
-  const n = N[step.approve]; n.g.classList.add('waiting');
-  const wait = auto ? 1700 : 9000;
-  const b = showBubble(step.approve, `<span class="who">${n.who} · your call</span>Ana needs a decision<button type="button">${step.m}</button><span class="auto">${auto ? '' : 'Auto-continues in the demo after a few seconds'}</span>`, { approve:true });
-  const btn = b.querySelector('button');
-  const ok = await new Promise(res => { let done = false; const fin = v => { if (!done) { done = true; res(v); } };
-    btn.onclick = () => fin(true); sleep(wait, id).then(v => fin(v)); });
-  n.g.classList.remove('waiting'); fadeBubble(step.approve);
-  return ok;
-}
-
-async function play(key, id, auto = false) {
-  const s = S[key]; buildList(key); renderStory(key);
+function renderScenario(key) {
+  shownKey = key; buildList(key); renderStory(key);
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', String(t.dataset.k === key)));
   Object.entries(N).forEach(([k, n]) => n.g.classList.toggle('active', k === key));
-  if (!await sleep(350, id)) return false;
-  for (let i = 0; i < s.steps.length; i++) {
-    const st = s.steps[i]; mark(i, 'active');
-    if (st.approve) {
-      if (!await waitApprove(st, id, auto)) return false;
-      counters.human++; counters.steps++; setStat(); mark(i, 'done'); pulse(st.approve); continue;
-    }
-    const from = N[st.f], color = from.c;
-    if (st.f === 'ana' || st.t === 'ana') busy(true);
-    showBubble(st.f, `<span class="who">${from.who}<span class="tag">${st.tag || ''}</span></span>${st.m}`, { v: st.f === 'ana' ? 'ana' : st.f === 'agency' ? 'sys' : 'person' });
-    if (!await sleep(reduced ? 300 : 650, id)) return false;
-    if (!await sendPacket(st.f, st.t, color, id) || id !== runId) return false;
-    pulse(st.t);
-    counters.steps++; if (st.f === 'ana' || st.t === 'ana') counters.ana++; setStat();
-    mark(i, 'done');
-    if (!await sleep(reduced ? 500 : 1000, id)) return false;
-    fadeBubble(st.f);
-    if (i === s.steps.length - 1 || (S[key].steps[i+1] && !(S[key].steps[i+1].f === 'ana' || S[key].steps[i+1].t === 'ana'))) busy(false);
-  }
-  busy(false);
-  await sleep(500, id); clearBubbles();
-  return id === runId;
 }
 
-function cancel() { runId++; killPackets(); clearBubbles(); busy(false); Object.values(N).forEach(n => n.g.classList.remove('waiting', 'pulse')); document.body.classList.remove('running'); }
-async function start(keys, auto) {
-  cancel(); const id = runId; document.body.classList.add('running', 'started');
-  for (const k of keys) { if (!await play(k, id, auto)) return; if (keys.length > 1 && !await sleep(900, id)) return; }
-  document.body.classList.remove('running');
-  const last = keys[keys.length - 1];
-  renderStory(last, `<p style="margin-top:12px;color:var(--ink)">Done. Tap another persona, or replay this one.</p>`);
+const bubbleFor = (st, approved) => st.approve
+  ? showBubble(st.approve, `<span class="who">${N[st.approve].who} · approved</span>✓ ${st.m}`, { approve:true })
+  : showBubble(st.f, `<span class="who">${N[st.f].who}<span class="tag">${st.tag || ''}</span></span>${st.m}`, { v: st.f === 'ana' ? 'ana' : st.f === 'agency' ? 'sys' : 'person' });
+
+/* draw the world as it is after `gn` steps are done */
+function renderState(gn, keep = false) {
+  g = gn; inflight = false;
+  if (!keep) { killPackets(); clearBubbles(); clearLive(); }
+  Object.values(N).forEach(n => n.g.classList.remove('waiting'));
+  const cur = g > 0 ? flat[g - 1] : null, key = cur ? cur.key : flat[0].key;
+  if (key !== shownKey) renderScenario(key);
+  const curI = cur ? cur.i : -1;
+  [...stepsEl.children].forEach((li, i) => { li.className = (S[key].steps[i].approve ? 'human ' : '') + (i <= curI ? 'done ' : '') + (i === curI ? 'active' : ''); });
+  if (cur) stepsEl.children[curI].scrollIntoView({ block:'nearest' });
+  counters = { steps:0, ana:0, human:0 };
+  flat.slice(0, g).forEach(x => { counters.steps++; if (x.st.approve) counters.human++; else if (x.st.f === 'ana' || x.st.t === 'ana') counters.ana++; });
+  setStat();
+  if (cur && !keep) {
+    bubbleFor(cur.st);
+    if (!cur.st.approve) { const e = edgeFor(cur.st.f, cur.st.t); e.el.style.setProperty('--c', N[cur.st.f].c); e.el.classList.add('live'); }
+  }
+  busy(!!cur && !cur.st.approve && (cur.st.f === 'ana' || cur.st.t === 'ana'));
+  const done = g === flat.length;
+  renderStory(key, done ? `<p style="margin-top:12px;color:var(--ink);font-weight:500">That’s the whole story. Press Replay, or pick another persona.</p>` : '');
+  ui();
 }
+
+/* ---------- transport ---------- */
+const bPrev = $('#prev'), bNext = $('#next'), bPlay = $('#play');
+function ui() {
+  const has = flat.length > 0;
+  bPrev.disabled = !has || g === 0;
+  bNext.disabled = has && g >= flat.length;
+  bPlay.innerHTML = playing ? '⏸ Pause' : (has && g >= flat.length ? '↻ Replay' : '▶ Play');
+  bPlay.classList.toggle('on', playing);
+  document.body.classList.toggle('running', playing);
+  if (!has) { $('#stepLabel').textContent = 'Pick a story, or press Next'; return; }
+  const key = g > 0 ? flat[g-1].key : flat[0].key, n = S[key].steps.length, i = g > 0 ? flat[g-1].i + 1 : 0;
+  const story = chain ? ` · Story ${ORDER.indexOf(key) + 1} of ${ORDER.length}` : '';
+  $('#stepLabel').innerHTML = `Step <b>${i}</b> of ${n}${story}`;
+}
+
+function setSession(keys) {
+  cancelRun(); playing = false; shownKey = null; chain = keys.length > 1;
+  flat = keys.flatMap(key => S[key].steps.map((st, i) => ({ key, i, st })));
+  document.body.classList.add('started');
+  renderState(0);
+}
+function cancelRun() { runId++; killPackets(); inflight = false; Object.values(N).forEach(n => n.g.classList.remove('waiting')); }
+function pause() {
+  if (!playing && !inflight) return;
+  const wasFlight = inflight; playing = false; cancelRun();
+  if (wasFlight) renderState(g + 1); else ui();
+}
+
+/* animate one step forward. Resolves false if cancelled midway. */
+async function animateStep(id, auto) {
+  const nxt = flat[g], st = nxt.st;
+  if (nxt.key !== shownKey) { fadeBubbles(); clearLive(); renderScenario(nxt.key); ui(); if (!await sleep(500, id)) return false; }
+  fadeBubbles(); clearLive(); inflight = true;
+  if (st.approve) {
+    if (!auto) { pulse(st.approve); renderState(g + 1); return true; }
+    const n = N[st.approve]; n.g.classList.add('waiting');
+    const b = showBubble(st.approve, `<span class="who">${n.who} · your call</span>Ana needs a decision<button type="button">${st.m}</button>`, { approve:true });
+    const ok = await new Promise(res => { let d = false; const fin = v => { if (!d) { d = true; res(v); } };
+      b.querySelector('button').onclick = () => fin(true); sleep(2400, id).then(fin); });
+    if (!ok || id !== runId) return false;
+    pulse(st.approve); renderState(g + 1); return true;
+  }
+  if (st.f === 'ana' || st.t === 'ana') busy(true);
+  bubbleFor(st);
+  if (!await sleep(auto ? 800 : 350, id)) return false;
+  if (!await sendPacket(st.f, st.t, N[st.f].c) || id !== runId) return false;
+  pulse(st.t);
+  renderState(g + 1, true);
+  return true;
+}
+
+async function loop(id) {
+  while (g < flat.length) {
+    if (!await animateStep(id, true)) return;
+    if (!await sleep(g < flat.length && flat[g].key !== flat[g-1].key ? 1800 : 1400, id)) return;
+  }
+  playing = false; renderState(g);
+}
+function play() {
+  if (!flat.length) setSession(['tenant']);
+  if (g >= flat.length) renderState(0);
+  cancelRun(); playing = true; ui(); loop(runId);
+}
+function next() {
+  if (!flat.length) setSession(['tenant']);
+  if (inflight) { playing = false; cancelRun(); renderState(g + 1); return; }
+  playing = false; cancelRun();
+  if (g >= flat.length) return;
+  ui(); animateStep(runId, false);
+}
+function prev() { if (!flat.length || g === 0) return; playing = false; cancelRun(); renderState(g - 1); }
+
 function pick(id) {
-  if (S[id]) { counters = { steps:0, ana:0, human:0 }; setStat(); start([id], false); }
-  else { cancel(); document.body.classList.add('started'); Object.entries(N).forEach(([k, n]) => n.g.classList.toggle('active', k === id)); document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', 'false')); renderInfo(id); }
+  if (S[id]) { setSession([id]); play(); }
+  else { pause(); cancelRun(); document.body.classList.add('started'); shownKey = null; Object.entries(N).forEach(([k, n]) => n.g.classList.toggle('active', k === id)); document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', 'false')); renderInfo(id); }
 }
-$('#full').onclick = () => { counters = { steps:0, ana:0, human:0 }; setStat(); start(ORDER, true); };
-$('#speed').onclick = e => { speed = speed === 1 ? 2 : 1; e.currentTarget.setAttribute('aria-pressed', String(speed === 2)); };
-$('#stop').onclick = () => { cancel(); counters = { steps:0, ana:0, human:0 }; setStat(); document.body.classList.remove('started');
+bPlay.onclick = () => playing ? pause() : play();
+bNext.onclick = next; bPrev.onclick = prev;
+$('#full').onclick = () => { setSession(ORDER); play(); };
+document.querySelectorAll('#speedSeg button').forEach(b => b.onclick = () => {
+  speed = parseFloat(b.dataset.s);
+  document.querySelectorAll('#speedSeg button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+});
+addEventListener('keydown', ev => {
+  if (ev.target.closest('input,textarea,select') || ev.metaKey || ev.ctrlKey || ev.altKey) return;
+  if (ev.key === 'ArrowRight') { ev.preventDefault(); next(); } else if (ev.key === 'ArrowLeft') { ev.preventDefault(); prev(); }
+});
+$('#stop').onclick = () => { cancelRun(); playing = false; flat = []; g = 0; shownKey = null; chain = false; clearBubbles(); clearLive(); busy(false);
+  counters = { steps:0, ana:0, human:0 }; setStat(); document.body.classList.remove('started', 'running');
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', 'false')); Object.values(N).forEach(n => n.g.classList.remove('active'));
-  stepsEl.innerHTML = '<li class="empty" style="opacity:1;display:block">Steps will appear here as the simulation runs.</li>'; initStory(); };
-function initStory() { $('#story').innerHTML = `<div class="eyebrow">Live network</div><h2>Who talks to whom?</h2><p>Click a persona to trigger a chain of events across the network. Click <b style="color:var(--ink)">Ana</b> to see what she does.</p>`; }
-initStory();
+  stepsEl.innerHTML = '<li class="empty" style="opacity:1;display:block">Steps will appear here as the simulation runs.</li>'; initStory(); ui(); };
+function initStory() { $('#story').style.setProperty('--c', '#2563eb'); $('#story').innerHTML = `<div class="eyebrow">Live network</div><h2>Who talks to whom?</h2><p>Click a persona to watch a chain of events across the network, then use Previous and Next to step through it at your own pace. Click <b style="color:var(--ink)">Ana</b> to see what she does.</p>`; }
+initStory(); ui();
 
 /* ---------- ambient life: faint packets on idle ---------- */
 if (!reduced) setInterval(() => {
-  if (document.body.classList.contains('running') || document.hidden) return;
+  if (document.body.classList.contains('started') || document.hidden) return;
   const e = E[Math.floor(Math.random() * E.length)], f = Math.random() < .5 ? e.a : e.b, t = f === e.a ? e.b : e.a;
   const g = el('g', { opacity:.55 }, pktG), c = el('circle', { r:3.2, fill:N[f].c }, g), t0 = performance.now(), d = 1800;
   (function fr(now) { const p = Math.min(1, (now - t0) / d), q = pt(e, f, p); c.setAttribute('cx', q.x); c.setAttribute('cy', q.y); p < 1 ? requestAnimationFrame(fr) : g.remove(); })(t0);
