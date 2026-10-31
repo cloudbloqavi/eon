@@ -38,14 +38,11 @@ a{color:inherit}
 .pillbtn:hover{background:#1a2347}
 
 /* hero */
-.hero{padding:56px 0 30px}
+.hero{padding:32px 0 0}
 .eyebrow{color:var(--blue);font-size:14.5px;font-weight:500}
-h1{font:600 clamp(36px,5vw,58px)/1.02 var(--head);letter-spacing:-.04em;color:var(--navy);max-width:15ch;margin-top:14px}
-h1 em{font-style:normal;color:var(--blue)}
-.lede{color:var(--body);font-size:18px;line-height:1.6;max-width:56ch;margin-top:20px}
 
 /* scenario chips, as the "Ana does the work" tabs */
-.tabs{display:flex;flex-wrap:wrap;gap:10px;margin:34px 0 18px;align-items:stretch}
+.tabs{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px;align-items:stretch}
 .tab{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;padding:10px 18px 11px;border-radius:14px;border:1px solid var(--line);background:#fff;transition:.2s;font-weight:500;font-size:14.5px;color:var(--ink)}
 .tab small{color:var(--blue);font-size:12px;font-weight:600;display:flex;gap:8px;align-items:center}
 .tab small i{width:7px;height:7px;border-radius:50%;background:var(--c)}
@@ -185,8 +182,7 @@ footer{padding:22px 0 30px;color:var(--muted);font-size:13px}
   .container{padding:0 16px}
   .nav .container{height:64px;gap:14px}.nav nav{display:none}.nav .pillbtn{margin-left:auto}
   .logo{font-size:26px}
-  .hero{padding:32px 0 12px}
-  .lede{font-size:16px}
+  .hero{padding:20px 0 0}
   .legend,.cue,.bar em{display:none}
   .node text{font-size:25px}.node.small text{font-size:22px}
   .node text.eyebrow{font-size:17px}.node text.sub{font-size:17px}
@@ -215,9 +211,6 @@ footer{padding:22px 0 30px;color:var(--muted);font-size:13px}
 
 <main class="container">
   <section class="hero">
-    <div class="eyebrow">The network behind every tenancy</div>
-    <h1>One agency. Four people. <em>Ana</em> in the middle.</h1>
-    <p class="lede">Every message, repair, payment and deadline in a rental moves between the same few people. Pick one and watch the chain reaction: Ana answers, Eon keeps the record, and a person approves anything that involves money.</p>
     <div class="tabs" id="tabs" role="group" aria-label="Choose a persona to simulate"></div>
   </section>
 
