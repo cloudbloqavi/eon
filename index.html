@@ -139,6 +139,10 @@ body.running .hint-ring{opacity:0}
 .steps li{cursor:pointer}
 .steps li:hover{background:var(--band)}
 .steps li.pending{}
+.steps li .part{display:block;font-size:11.5px;font-weight:600;color:var(--blue);margin-bottom:4px;padding-top:6px;border-top:1px dashed var(--line2)}
+.chapter{position:absolute;left:16px;top:14px;z-index:2;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;box-shadow:0 4px 12px rgba(10,16,36,.08);max-width:calc(100% - 32px)}
+.chapter[hidden]{display:none}
+.chapter i{width:8px;height:8px;border-radius:50%;background:#7c3aed;flex:none}
 .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);padding:12px 18px;border-top:1px solid var(--line);background:#fff}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:8px;height:8px;border-radius:50%;display:block}
@@ -201,6 +205,7 @@ footer{padding:22px 0 30px;color:var(--muted);font-size:13px}
   .logo{font-size:26px}
   .hero{padding:20px 0 0}
   .legend,.cue,.bar em{display:none}
+  .chapter{font-size:11px;padding:5px 11px;top:10px;left:10px}
   .node text{font-size:25px}.node.small text{font-size:22px}
   .node text.eyebrow{font-size:17px}.node text.sub{font-size:17px}
   .bubble{font-size:11.5px;padding:6px 9px;max-width:58%}
@@ -235,6 +240,7 @@ footer{padding:22px 0 30px;color:var(--muted);font-size:13px}
     <div class="window">
       <div class="bar"><i></i><i></i><i></i><span>app.eonai.solutions/network</span><em>A scripted demonstration with sample data</em></div>
       <div class="stagebox" id="stagebox">
+        <div class="chapter" id="chapter" hidden></div>
         <div class="cue">Click any node to start its story</div>
         <svg class="stage" id="stage" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet" aria-label="Network graph of tenants, home owners, agencies, investors, vendors and authorities connected through Ana, the AI agent"></svg>
         <div class="overlay" id="overlay"></div>
@@ -309,12 +315,12 @@ const N = {
   agency:   { x:150, y:492, r:42, c:'#0a1024', solid:true, eyebrow:'For', name:'Agencies',    who:'Carlos',     icon:'agency',   persona:true, bubble:'above' },
   investor: { x:850, y:492, r:42, c:'#059669', eyebrow:'',    name:'Investors',   who:'Investor',   icon:'investor', persona:true, bubble:'above' },
   ana:      { x:500, y:312, r:58, c:'#2563eb', name:'Ana', sub:'AI copilot · WhatsApp', who:'Ana', icon:'ana', bubble:'side' },
-  vendor:   { x:500, y:70,  r:28, c:'#64708c', name:'Vendors', sub:'Puig Plumbing', who:'Puig Plumbing', icon:'vendor', small:true, bubble:'below' },
+  vendor:   { x:500, y:76,  r:42, c:'#7c3aed', eyebrow:'For', name:'Service providers', who:'Puig Plumbing', icon:'vendor', persona:true, bubble:'below' },
   authority:{ x:500, y:568, r:28, c:'#64708c', name:'Authorities', sub:'INCASÒL · ATC', who:'INCASÒL', icon:'authority', small:true, bubble:'above' }
 };
 const E = [
   ['tenant','ana',0],['owner','ana',0],['agency','ana',0],['investor','ana',0,1],['vendor','ana',0],['authority','ana',0],
-  ['tenant','agency',0],['agency','authority',0.06],['agency','investor',0,1]
+  ['tenant','agency',0],['agency','authority',0.06],['agency','investor',0,1],['tenant','vendor',0,1]
 ].map(([a,b,bend,preview]) => ({a,b,bend,preview:!!preview,key:[a,b].sort().join('|')}));
 const edgeFor = (a,b) => E.find(e => e.key === [a,b].sort().join('|'));
 
@@ -358,8 +364,31 @@ const S = {
       { f:'ana', t:'tenant', m:'Agreed: the 5th. I’ll remind you the day before.', tag:'WhatsApp', note:'Ana confirms and schedules the follow-up.' },
       { f:'agency', t:'authority', m:'Deposit lodged · Oriol Casas · INCASÒL', tag:'Filing', rec:true, note:'The deposit is lodged before the deadline, no surcharge.' }
     ]},
+  vendor: { quote:'“Same plumber, booked twice”', chip:'part 2 preview', label:'Service providers', who:'Puig Plumbing · Marc, Verdi 100, 3º B', title:'Booked by the agency, then by the tenant',
+    blurb:'First time, the agency picks the plumber. Six months later Marc books the same one himself, with Ana, because Eon remembers how it went.',
+    preview:true, previewNote:'Part 2 is a preview · booking providers directly is not live yet',
+    steps:[
+      { f:'tenant', t:'ana', m:'The heater has stopped working ❄️', tag:'WhatsApp', part:'Booking 1 · via the agency', note:'Marc reports a broken heater on WhatsApp.' },
+      { f:'ana', t:'agency', m:'Repair opened · Verdi 100, 3º B. No heating provider on record. Suggest Puig Plumbing?', tag:'Eon', rec:true, note:'Ana opens the repair. This is the first time, so the agency chooses the provider.' },
+      { approve:'agency', m:'Book Puig Plumbing', note:'Carlos picks Puig Plumbing from his own contacts.' },
+      { f:'ana', t:'vendor', m:'Heater out at Verdi 100, 3º B. Thursday 10:00?', tag:'WhatsApp', note:'Ana books the provider.' },
+      { f:'vendor', t:'ana', m:'Confirmed, Thursday 10:00.', tag:'WhatsApp', note:'Puig Plumbing confirms the slot.' },
+      { f:'ana', t:'tenant', m:'Puig Plumbing comes Thursday at 10:00.', tag:'WhatsApp', note:'Marc gets the appointment.' },
+      { f:'vendor', t:'ana', m:'Job done ✅ Photos and invoice attached.', tag:'Eon', note:'After the visit the provider sends photos and the invoice.' },
+      { f:'ana', t:'agency', m:'Invoice filed on the repair and queued for the owner’s statement.', tag:'Eon', rec:true, note:'Everything lands on the record, and the invoice on the owner’s statement.' },
+      { f:'ana', t:'tenant', m:'How was Puig Plumbing today? ⭐ 1 to 5', tag:'WhatsApp', note:'Ana asks Marc how it went.' },
+      { f:'tenant', t:'ana', m:'⭐⭐⭐⭐⭐ On time and tidy. Would use again.', tag:'WhatsApp', rec:true, note:'Marc’s rating is saved against the provider. This is what makes next time different.' },
+      { f:'tenant', t:'ana', m:'There’s a drip under the bathroom sink.', tag:'WhatsApp', part:'Booking 2 · directly, with Ana · six months later', note:'Six months later, Marc reports a new problem.' },
+      { f:'ana', t:'tenant', m:'Puig Plumbing fixed your heater in April and you rated them ⭐5. Thursday 10:00 or Friday 16:00?', tag:'WhatsApp', note:'Ana remembers. She offers the provider Marc already trusts, with open slots.' },
+      { f:'tenant', t:'ana', m:'Thursday 10:00, please.', tag:'WhatsApp', note:'Marc chooses. No agency step in between.' },
+      { f:'ana', t:'vendor', m:'Drip under bathroom sink, Verdi 100, 3º B. Thursday 10:00?', tag:'Provider network', note:'Ana books the provider directly, within the limits the agency set.' },
+      { f:'vendor', t:'ana', m:'Booked. See you Thursday.', tag:'Provider network', note:'The provider confirms.' },
+      { f:'vendor', t:'tenant', m:'Hi Marc, I’ll be there Thursday at 10:00 😊', tag:'Direct', note:'Provider and tenant can talk directly. Eon keeps the thread on record.' },
+      { f:'ana', t:'agency', m:'FYI: Marc booked Puig Plumbing directly, within your limits.', tag:'Eon', rec:true, note:'The agency sees it but isn’t in the way. Anything outside its limits would still need a person.' },
+      { f:'ana', t:'owner', m:'Repair booked at Verdi 100. The invoice will land on your statement.', tag:'Owner portal', rec:true, note:'The owner is kept informed, as before.' }
+    ]},
   investor: { quote:'“What’s the yield on this flat?”', label:'Investors', who:'Via a personal investor link', title:'A deal built on real rents',
-    blurb:'Preview of the Sales department: investor links using the actual rents in the portfolio.', preview:true,
+    blurb:'Preview of the Sales department: investor links using the actual rents in the portfolio.', preview:true, previewNote:'Preview · Sales department is coming soon',
     steps:[
       { f:'investor', t:'ana', m:'Opens an investor link: Verdi 100, 3º B', tag:'Investor link', note:'The investor opens a link the agency sent.' },
       { f:'ana', t:'agency', m:'Pull real rents and costs for comparable flats.', tag:'Eon', note:'Ana pulls real rents from the agency’s own portfolio.' },
@@ -371,12 +400,11 @@ const S = {
       { f:'ana', t:'investor', m:'Viewing booked: Thursday 17:00.', tag:'Investor link', note:'The investor gets the confirmation.' }
     ]}
 };
-const ORDER = ['agency','tenant','owner','investor'];
+const ORDER = ['agency','tenant','vendor','owner','investor'];
 
 const INFO = {
   ana: { eyebrow:'The AI agent', title:'Ana', body:'Ana answers on the agency’s own WhatsApp number, chases rent, coordinates repairs and works in Eon. She handles the repetitive part and hands every decision involving money, leases or prices to a person.',
     items:[['Tenants','Answers at any hour: breakdowns, reminders, appointments, lease questions.'],['Owners','Statements and “where is my rent” questions, from the record.'],['Agency','Opens tickets, books vendors, flags deadlines. You can step into any chat.'],['Next','Whole processes end to end (repairs, arrears, renewals) within limits you set.']] },
-  vendor: { eyebrow:'Vendors', title:'Plumbers, electricians, locksmiths', body:'Ana coordinates the booking by WhatsApp. The invoice lands on the owner’s statement automatically.', items:[] },
   authority: { eyebrow:'Authorities', title:'Deposit and tax deadlines', body:'Eon works out each region’s official deadline the day the lease is signed (INCASÒL, ATC, Modelo 600, SERPAVI) and warns 10 days, 3 days and on the day.', items:[] }
 };
 
@@ -420,10 +448,10 @@ N.investor.g.querySelector('text:not(.eyebrow)').setAttribute('y', N.investor.y 
 
 /* ---------- tabs ---------- */
 const tabs = $('#tabs');
-const ROLE = { tenant:'Tenant', owner:'Owner', agency:'Agency', investor:'Investor' };
+const ROLE = { tenant:'Tenant', owner:'Owner', agency:'Agency', vendor:'Service provider', investor:'Investor' };
 const mkTab = k => { const s = S[k], b = document.createElement('button'); b.className = 'tab'; b.style.setProperty('--c', N[k].c); b.setAttribute('aria-pressed', 'false'); b.dataset.k = k;
-  b.innerHTML = `<small><i></i>${ROLE[k]}${s.preview ? '<span class="soon">preview</span>' : ''}</small>${s.quote}`; b.onclick = () => pick(k); tabs.appendChild(b); };
-['tenant','owner','agency','investor'].forEach(mkTab);
+  b.innerHTML = `<small><i></i>${ROLE[k]}${s.preview ? `<span class="soon">${s.chip || 'preview'}</span>` : ''}</small>${s.quote}`; b.onclick = () => pick(k); tabs.appendChild(b); };
+['tenant','owner','agency','vendor','investor'].forEach(mkTab);
 tabs.insertAdjacentHTML('beforeend', '<span class="sp"></span><span class="ctl"><button class="btn primary" id="full">▶ Run a full day</button><button class="btn" id="stop">Reset</button></span>');
 
 /* ---------- engine ----------
@@ -484,7 +512,7 @@ function buildList(key) {
     const li = document.createElement('li'); if (s.approve) li.className = 'human';
     li.tabIndex = 0; li.title = 'Jump to this step';
     const route = s.approve ? N[s.approve].who + ' decides' : `${N[s.f].who} → ${N[s.t].who}${s.tag ? ' · ' + s.tag : ''}`;
-    li.innerHTML = `<span class="n">${i+1}</span><span><span class="route">${s.f === 'ana' || s.t === 'ana' ? '<span class="ana-tag">✦</span> ' : ''}${route}</span>${s.note}${s.approve ? '<span class="chip human">Needs a person</span>' : s.rec ? '<span class="chip rec">Recorded in Eon</span>' : ''}</span>`;
+    li.innerHTML = `<span class="n">${i+1}</span><span>${s.part ? `<span class="part">${s.part}</span>` : ''}<span class="route">${s.f === 'ana' || s.t === 'ana' ? '<span class="ana-tag">✦</span> ' : ''}${route}</span>${s.note}${s.approve ? '<span class="chip human">Needs a person</span>' : s.rec ? '<span class="chip rec">Recorded in Eon</span>' : ''}</span>`;
     const jump = () => { const at = flat.findIndex(x => x.key === shownKey && x.i === i); if (at >= 0) { pause(); cancelRun(); renderState(at + 1); } };
     li.onclick = jump; li.onkeydown = ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); jump(); } };
     stepsEl.appendChild(li);
@@ -494,7 +522,7 @@ function buildList(key) {
 function renderStory(key, extra = '') {
   const s = S[key];
   $('#story').style.setProperty('--c', N[key].c);
-  $('#story').innerHTML = `<div class="eyebrow">${key === 'investor' ? '' : 'For '}${s.label} · ${s.who}</div><h2>${s.title}</h2><p>${s.blurb}</p>${s.preview ? '<span class="badge">Preview · Sales department is coming soon</span>' : ''}${extra}`;
+  $('#story').innerHTML = `<div class="eyebrow">${key === 'investor' ? '' : 'For '}${s.label} · ${s.who}</div><h2>${s.title}</h2><p>${s.blurb}</p>${s.preview ? `<span class="badge">${s.previewNote || 'Preview'}</span>` : ''}${extra}`;
 }
 function renderInfo(id) {
   const i = INFO[id], n = N[id];
@@ -529,6 +557,8 @@ function renderState(gn, keep = false) {
     if (!cur.st.approve) { const e = edgeFor(cur.st.f, cur.st.t); e.el.style.setProperty('--c', N[cur.st.f].c); e.el.classList.add('live'); }
   }
   busy(!!cur && !cur.st.approve && (cur.st.f === 'ana' || cur.st.t === 'ana'));
+  const chap = [...S[key].steps.slice(0, Math.max(curI, 0) + 1)].reverse().find(x => x.part);
+  const ch = $('#chapter'); ch.hidden = !(chap && S[key].steps.some(x => x.part) && cur); if (chap) ch.innerHTML = `<i></i>${chap.part}`;
   const done = g === flat.length;
   renderStory(key, done ? `<p style="margin-top:12px;color:var(--ink);font-weight:500">That’s the whole story. Press Replay, or pick another persona.</p>` : '');
   ui();
@@ -622,7 +652,7 @@ addEventListener('keydown', ev => {
   if (ev.key === 'ArrowRight') { ev.preventDefault(); next(); } else if (ev.key === 'ArrowLeft') { ev.preventDefault(); prev(); }
 });
 $('#stop').onclick = () => { cancelRun(); playing = false; flat = []; g = 0; shownKey = null; chain = false; clearBubbles(); clearLive(); busy(false);
-  counters = { steps:0, ana:0, human:0 }; setStat(); document.body.classList.remove('started', 'running');
+  counters = { steps:0, ana:0, human:0 }; setStat(); document.body.classList.remove('started', 'running'); $('#chapter').hidden = true;
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', 'false')); Object.values(N).forEach(n => n.g.classList.remove('active'));
   stepsEl.innerHTML = '<li class="empty" style="opacity:1;display:block">Steps will appear here as the simulation runs.</li>'; initStory(); ui(); };
 function initStory() { $('#story').style.setProperty('--c', '#2563eb'); $('#story').innerHTML = `<div class="eyebrow">Live network</div><h2>Who talks to whom?</h2><p>Click a persona to watch a chain of events across the network, then use Previous and Next to step through it at your own pace. Click <b style="color:var(--ink)">Ana</b> to see what she does.</p>`; }
